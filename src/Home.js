@@ -5,7 +5,7 @@ import { Card } from 'semantic-ui-react';
 class Home extends React.Component{
 
     render(){
-        // console.log(this.props.allFood)
+        console.log(this.props.allFood)
         return(
             <div>
                 <div className='home' >

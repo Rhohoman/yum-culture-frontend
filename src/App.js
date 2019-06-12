@@ -9,22 +9,12 @@ import { connect } from 'react-redux';
 
 class App extends React.Component{
 
-  // state = {
-  //   currentUser: null,
-  //   allFood: [],
-  // }
-  //replace this state with a redux state
-
-  fetchFood = () => {
-    fetch('http://localhost:3000/foods')
-        .then(response => response.json())
-        .then(mealsJSON => {
-            this.setState({
-                allFood: mealsJSON
-            })
-        })
+  state = {
+    currentUser: null,
+    allFood: [],
   }
-
+  //replace this state with a redux state
+  
   componentDidMount(){
     if(localStorage.token){
       fetch('http://localhost:3000/profile', {
@@ -41,6 +31,16 @@ class App extends React.Component{
       .then(this.fetchFood)
     }
   }
+  
+  fetchFood = () => {
+    fetch('http://localhost:3000/foods')
+        .then(response => response.json())
+        .then(mealsJSON => {
+            this.setState({
+                allFood: mealsJSON
+            })
+        })
+  }
 
   logOut = () => {
 		localStorage.removeItem('token')
@@ -49,18 +49,18 @@ class App extends React.Component{
 		}, () => {
 			this.props.history.push("/login")
 		})
-	}
-
-	// setCurrentUser = (data) => {
-	// 	localStorage.setItem("token", data.jwt)
-	// 	this.setState({
-	// 		currentUser: data.user
-	// 	},() => console.log(this.props.currentUser))
-	// }
-
+  }
+  
+  setCurrentUser = (data) => {
+		localStorage.setItem("token", data.jwt)
+		this.setState({
+			currentUser: data.user
+		},() => console.log(this.state.currentUser))
+  }
+  
   render(){
-    console.log(this.props.allFood)
-    const currentUserID = this.props.currentUser ? this.props.currentUser.id : null
+    console.log(this.state.allFood )
+    const currentUserID = this.state.currentUser ? this.state.currentUser.id : null
     return (
       <div>
         <div className='appHeader'>
@@ -70,35 +70,35 @@ class App extends React.Component{
         <div className="topnav">
           <a href="http://localhost:3001/home">Home</a>
           <a href="http://localhost:3001/login">Log In</a>
-          {this.props.currentUser ?  <input type='button' value='Logout' onClick={this.logOut}/> : null}
-          {this.props.currentUser ?  <Link to={`/users/${currentUserID}`} >Profile</Link> : null}
+          {this.state.currentUser ?  <input type='button' value='Logout' onClick={this.logOut}/> : null}
+          {this.state.currentUser ?  <Link to={`/users/${currentUserID}`} >Profile</Link> : null}
         </div>
 
-        <div className='loggedInName'>{this.props.currentUser ? <h1>{this.props.currentUser.username}</h1> : null} </div>
+        <div className='loggedInName'>{this.state.currentUser ? <h1>{this.state.currentUser.username}</h1> : null} </div>
         <div className='body'>
           <Switch>
             <Route
               path='/login'
               render={(routerProps) => {
-                return <Login {...routerProps} setCurrentUser={this.props.setCurrentUser}/> 
+                return <Login {...routerProps} setCurrentUser={this.setCurrentUser}/> 
               }}
             />
             <Route
               path='/signup'
               render={(routerProps) => {
-                return <Signup {...routerProps}  setCurrentUser={this.props.setCurrentUser}/> 
+                return <Signup {...routerProps}  setCurrentUser={this.setCurrentUser}/> 
               }}
             />
             <Route 
               path="/users/:id"
               render={(routerProps) => {
-                return <User allFood={this.props.allFood} {...routerProps}/>
+                return <User allFood={this.state.allFood} {...routerProps}/>
               }}
             />
             <Route
               path='/home'
               render={(routerProps) => {
-                return <Home allFood={this.props.allFood} {...routerProps}/> 
+                return <Home allFood={this.state.allFood} {...routerProps}/> 
               }}
             />
             <Route render={() => <Redirect to='/home'/> }/>
@@ -113,22 +113,33 @@ class App extends React.Component{
   }
 }
 
-function mapStateToProps(state){
-  // get state
-  return {
-    currentUser: state.currentUser,
-    allFood: state.allFood
-  }
-}
+// function mapStateToProps(state){
+//   // get state
+//   return {
+//     currentUser: state.currentUser,
+//     allFood: state.allFood
+//   }
+// }
 
-function mapDispatchToProps(dispatch){
-  //edit states
-  return {
-    setCurrentUser: (user) => {
-      dispatch({type: "SET_CURRENT_USER", payload: user})
-    }, 
-    //more functions that need to do something
-  }
-}
+// function mapDispatchToProps(dispatch){
+//   //edit states
+//   return {
+//     setCurrentUser: (user) => {
+//       dispatch({type: "SET_CURRENT_USER", payload: user})
+//     },
+//   }
+// }
 
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+
+// export default connect(mapStateToProps, mapDispatchToProps)(App);
+export default App
+
+
+
+// React 
+	// setCurrentUser = (data) => {
+	// 	localStorage.setItem("token", data.jwt)
+	// 	this.setState({
+	// 		currentUser: data.user
+	// 	},() => console.log(this.props.currentUser))
+	// }

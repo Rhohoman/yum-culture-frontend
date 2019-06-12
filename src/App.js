@@ -16,6 +16,18 @@ class App extends React.Component{
   //replace this state with a redux state
   
   componentDidMount(){
+  
+    fetch('http://localhost:3000/foods')
+    .then(response => response.json())
+    .then(mealsJSON => {
+          this.setState({
+             allFood: mealsJSON
+         })
+    })
+    .then(this.fetchUser)
+  }
+  
+  fetchUser = () => {
     if(localStorage.token){
       fetch('http://localhost:3000/profile', {
         method: 'GET',
@@ -28,18 +40,7 @@ class App extends React.Component{
           currentUser: userData.user
         })
       })
-      .then(this.fetchFood)
     }
-  }
-  
-  fetchFood = () => {
-    fetch('http://localhost:3000/foods')
-        .then(response => response.json())
-        .then(mealsJSON => {
-            this.setState({
-                allFood: mealsJSON
-            })
-        })
   }
 
   logOut = () => {
@@ -59,7 +60,7 @@ class App extends React.Component{
   }
   
   render(){
-    console.log(this.state.allFood )
+    console.log(this.state.allFood)
     const currentUserID = this.state.currentUser ? this.state.currentUser.id : null
     return (
       <div>

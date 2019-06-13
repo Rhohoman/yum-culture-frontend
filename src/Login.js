@@ -1,4 +1,6 @@
 import React from 'react'
+import { connect } from 'react-redux';
+
 
 class Login extends React.Component{
 
@@ -57,4 +59,21 @@ class Login extends React.Component{
     }
 }
 
-export default Login
+function mapStateToProps(state){
+    // get state
+    return {
+      currentUser: state.currentUser,
+      allFood: state.allFood
+    }
+}
+  
+function mapDispatchToProps(dispatch){
+    //edit states
+    return {
+        setCurrentUser: (user) => {
+            dispatch({type: "SET_CURRENT_USER", payload: user})
+        },
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Login);

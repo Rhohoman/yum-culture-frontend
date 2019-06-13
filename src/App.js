@@ -9,20 +9,17 @@ import { connect } from 'react-redux';
 
 class App extends React.Component{
 
-  state = {
-    currentUser: null,
-    allFood: [],
-  }
-  //replace this state with a redux state
   
   componentDidMount(){
   
     fetch('http://localhost:3000/foods')
     .then(response => response.json())
     .then(mealsJSON => {
-          this.setState({
-             allFood: mealsJSON
-         })
+        //   this.setState({
+        //      allFood: mealsJSON
+        //  })
+        // debugger
+        this.props.fetchAllFood(mealsJSON)
     })
     .then(this.fetchUser)
   }
@@ -43,25 +40,9 @@ class App extends React.Component{
     }
   }
 
-  logOut = () => {
-		localStorage.removeItem('token')
-		this.setState({
-			currentUser: null
-		}, () => {
-			this.props.history.push("/login")
-		})
-  }
-  
-  setCurrentUser = (data) => {
-		localStorage.setItem("token", data.jwt)
-		this.setState({
-			currentUser: data.user
-		},() => console.log(this.state.currentUser))
-  }
-  
   render(){
-    console.log(this.state.allFood)
-    const currentUserID = this.state.currentUser ? this.state.currentUser.id : null
+    // console.log(this.props.allFood)
+    const currentUserID = this.props.currentUser ? this.props.currentUser.id : null
     return (
       <div>
         <div className='appHeader'>
@@ -71,17 +52,17 @@ class App extends React.Component{
         <div className="topnav">
           <a href="http://localhost:3001/home">Home</a>
           <a href="http://localhost:3001/login">Log In</a>
-          {this.state.currentUser ?  <input type='button' value='Logout' onClick={this.logOut}/> : null}
-          {this.state.currentUser ?  <Link to={`/users/${currentUserID}`} >Profile</Link> : null}
+          {this.props.currentUser ?  <input type='button' value='Logout' onClick={this.props.logOut}/> : null}
+          {this.props.currentUser ?  <Link to={`/users/${currentUserID}`} >Profile</Link> : null}
         </div>
 
-        <div className='loggedInName'>{this.state.currentUser ? <h1>{this.state.currentUser.username}</h1> : null} </div>
+        <div className='loggedInName'>{this.props.currentUser ? <h1>{this.props.currentUser.username}</h1> : null} </div>
         <div className='body'>
           <Switch>
             <Route
               path='/login'
               render={(routerProps) => {
-                return <Login {...routerProps} setCurrentUser={this.setCurrentUser}/> 
+                return <Login {...routerProps} /> 
               }}
             />
             <Route
@@ -93,13 +74,13 @@ class App extends React.Component{
             <Route 
               path="/users/:id"
               render={(routerProps) => {
-                return <User allFood={this.state.allFood} {...routerProps}/>
+                return <User allFood={this.props.allFood} {...routerProps}/>
               }}
             />
             <Route
               path='/home'
               render={(routerProps) => {
-                return <Home allFood={this.state.allFood} {...routerProps}/> 
+                return <Home {...routerProps}/> 
               }}
             />
             <Route render={() => <Redirect to='/home'/> }/>
@@ -114,26 +95,34 @@ class App extends React.Component{
   }
 }
 
-// function mapStateToProps(state){
-//   // get state
-//   return {
-//     currentUser: state.currentUser,
-//     allFood: state.allFood
-//   }
-// }
+function mapStateToProps(state){
+  // get state
+  return {
+    currentUser: state.currentUser,
+    allFood: state.allFood
+  }
+}
 
-// function mapDispatchToProps(dispatch){
-//   //edit states
-//   return {
-//     setCurrentUser: (user) => {
-//       dispatch({type: "SET_CURRENT_USER", payload: user})
-//     },
-//   }
-// }
+function mapDispatchToProps(dispatch){
+  //edit states
+  return {
+    setCurrentUser: (user) => {
+      dispatch({type: "SET_CURRENT_USER", payload: user})
+    },
+    logOut: (user) => {
+      dispatch({type: "LOG_OUT", payload: user})
+    },
+    fetchAllFood: (food) => {
+      // debugger
+      dispatch({type: "FETCH_ALL_FOOD", payload: food}) 
+    }
+
+  }
+}
 
 
-// export default connect(mapStateToProps, mapDispatchToProps)(App);
-export default App
+export default connect(mapStateToProps, mapDispatchToProps)(App);
+// export default App
 
 
 
@@ -144,3 +133,12 @@ export default App
 	// 		currentUser: data.user
 	// 	},() => console.log(this.props.currentUser))
 	// }
+
+   // logOut = () => {
+	// 	localStorage.removeItem('token')
+	// 	this.setState({
+	// 		currentUser: null
+	// 	}, () => {
+	// 		this.props.history.push("/login")
+	// 	})
+  // }

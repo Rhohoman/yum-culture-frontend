@@ -1,11 +1,12 @@
 import React from 'react';
 import MealCard from './MealCard';
 import { Card } from 'semantic-ui-react';
+import { connect } from 'react-redux';
 
 class Home extends React.Component{
 
     render(){
-        console.log(this.props.allFood)
+        // console.log(this.props.allFood)
         return(
             <div>
                 <div className='home' >
@@ -20,4 +21,12 @@ class Home extends React.Component{
     }
 }
 
-export default Home
+function mapStateToProps(state){
+    // get state
+    return {
+      allFood: state.allFood,
+    }
+}
+
+
+export default connect(mapStateToProps)(Home)

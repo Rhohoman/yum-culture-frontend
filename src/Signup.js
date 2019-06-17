@@ -1,5 +1,5 @@
 import React from 'react'
-
+import { connect } from 'react-redux';
 
 class Signup extends React.Component{
 
@@ -55,4 +55,22 @@ class Signup extends React.Component{
     }
 }
 
-export default Signup
+function mapStateToProps(state){
+    // get state
+    return {
+      currentUser: state.currentUser,
+    }
+}
+  
+function mapDispatchToProps(dispatch,props){
+    //edit states
+    return {
+        setCurrentUser: (user) => {
+            props.history.push('/home')
+            dispatch({type: "SET_CURRENT_USER", payload: user})
+        },
+    }
+}
+
+
+export default connect(mapStateToProps,mapDispatchToProps) (Signup);

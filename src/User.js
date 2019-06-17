@@ -1,30 +1,25 @@
 import React from 'react'
 import { Dropdown } from 'semantic-ui-react'
 import FavoritesList from './FavoritesList';
+import { connect } from 'react-redux';
+
+
 
 class User extends React.Component{
 
-    state = {
-        user: null,
-        favorites: [],
-        selectedFood: null,
-    }
-
     componentDidMount(){
         const userId = this.props.match.params.id
-        fetch(`http://localhost:3000/users/${userId}`)
+        // debugger
+        fetch(`http://localhost:3000/users/${userId}`, {
+            headers: {
+                "Authorization": `Bearer ${localStorage.getItem("token")}`
+            }
+        })
         .then(response => response.json())
         .then(response => {
-            this.setState({
-                user: response,
-                favorites: response.favorites
-            },() => console.log(this.state.favorites))
+            this.props.fetchUserData(response)
         })
     }
-
-    // fetchFavorites = () => {
-    //     fetch(`http://localhost:3000/favorites`)
-    // }
 
     changeKeyForSearch = () => {
         const copyArrayFood = this.props.allFood
@@ -41,40 +36,60 @@ class User extends React.Component{
         fetch(`http://localhost:3000/foods/${selectedFoodID}`)
         .then(response => response.json())
         .then(response => {
-            this.setState({
-                selectedFood: response
-            },() => this.addingMealToFavorites(this.state.selectedFood))
+            this.props.handleChange(response)
+            this.postFavorites()
         })
     }
-    
-    addingMealToFavorites = (meal) => {
-        const copyFavoritesArray = this.state.favorites
-        copyFavoritesArray.push(meal)
-
-        this.setState({
-            favorites: copyFavoritesArray
-        },() => this.postFavorites())
-    }
-    //does this work here how I want it to work?
-    // console.log(this.state.favorites)
 
     postFavorites = () => {
-        fetch(`http://localhost:3000/favorites`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json'
-            },
-            body: JSON.stringify({ 
-                user_id: this.state.user.id,
-                food_id: this.state.selectedFood.id,
-                name: this.state.selectedFood.name,
-                image: this.state.selectedFood.image,
-                categories: this.state.selectedFood.youtube_url,
-                area: this.state.selectedFood.area,
-                instructions: this.state.selectedFood.instructions
+        const names = this.props.favorites.map(fav => fav.name)
+        if (!names.includes(this.props.selectedFood.name)) {
+            fetch(`http://localhost:3000/favorites`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({ 
+                    user_id: this.props.user.id,
+                    food_id: this.props.selectedFood.id,
+                    name: this.props.selectedFood.name,
+                    image: this.props.selectedFood.image,
+                    categories: this.props.selectedFood.categories,
+                    youtube_url: this.props.selectedFood.youtube_url,
+                    area: this.props.selectedFood.area,
+                    instructions: this.props.selectedFood.instructions
+                })
             })
-        })
+            .then(res => res.json())
+            .then(data => {this.addingMealToFavorites(data)})
+        } else {
+            alert('You cannot add that favorite')
+        }
+    }
+
+    addingMealToFavorites = (favorite) => {
+                const copyFavoritesArray = [...this.props.favorites]
+                copyFavoritesArray.push(favorite)
+                this.props.addFavorites(copyFavoritesArray)
+
+        // const copyFavoritesArray = [...this.props.favorites]
+        // // console.log(favorite)
+
+        // const names = this.props.favorites.map(fav => fav.name)
+
+        // if(!names.includes(favorite.name)){
+        //     copyFavoritesArray.push(favorite)
+        //     this.props.addFavorites(copyFavoritesArray)
+    }
+
+    deleteMealFromFavorites = (favorite) =>{
+        const copyFavoritesArray = [...this.props.favorites]
+        let index = copyFavoritesArray.indexOf(favorite)
+        copyFavoritesArray.splice(index, 1)
+
+        this.props.deleteFavorite(copyFavoritesArray)
+
     }
 
     render(){
@@ -84,9 +99,9 @@ class User extends React.Component{
             <div>
                 <div>
                     <h1>User Display page</h1>
-                    {this.state.user ? <p>Name: {this.state.user.name}</p> : null}
-                    {this.state.user ? <p>Location: {this.state.user.location}</p> : null}
-                    {this.state.user ? <p>Username: {this.state.user.username}</p> : null}
+                    {this.props.user ? <p>Name: {this.props.user.name}</p> : null}
+                    {this.props.user ? <p>Location: {this.props.user.location}</p> : null}
+                    {this.props.user ? <p>Username: {this.props.user.username}</p> : null}
                 </div>
                 <div>
                     <h2>Add to Favorites</h2>
@@ -96,15 +111,42 @@ class User extends React.Component{
                     fluid
                     search
                     selection
-                    value={this.state.selectedFood ? this.state.selectedFood.name : ''}
+                    value={this.props.selectedFood ? this.props.selectedFood.name : ''}
                     selectOnNavigation={false}
                     options={this.changeKeyForSearch()}
                     />
                 </div>
-                {this.state.favorites.length === 0 ? null : <FavoritesList favorites={this.state.favorites} />}
+                {this.props.favorites.length === 0 ? null : <FavoritesList favorites={this.props.favorites} />}
             </div>
         )
     }
 }
 
-export default User 
+function mapStateToProps(state){
+    // get state
+    return {
+      user: state.user,
+      favorites: state.favorites,
+      selectedFood: state.selectedFood,
+    }
+}
+  
+function mapDispatchToProps(dispatch){
+    //edit states
+    return {
+        fetchUserData: (userData) => {
+            dispatch({type: "FETCH_USER_AND_FAVORITES", payload: userData})
+        },
+        handleChange: (selectedFood) => {
+            dispatch({type: "SELECTED_FOOD", payload: selectedFood})
+        },
+        addFavorites: (favorites) => {
+            dispatch({type: "ADD_FAVORITES", payload: favorites})
+        },
+        deleteFavorite: (favorites) => {
+            dispatch({type: "DELETE_FAVORITE", payload: favorites})
+        }
+    }
+}
+
+export default connect(mapStateToProps,mapDispatchToProps)(User) 

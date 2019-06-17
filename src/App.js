@@ -4,7 +4,9 @@ import Signup from './Signup';
 import Login from './Login';
 import Home from './Home';
 import User from './User';
-import { Switch, Route, Redirect, Link } from 'react-router-dom';
+import Explore from './Explore';
+import Loader from './Loader';
+import { Switch, Route, Redirect, Link, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 class App extends React.Component{
@@ -33,30 +35,30 @@ class App extends React.Component{
         }
       }).then(res => res.json())
       .then(userData => {
-        this.setState({
-          currentUser: userData.user
-        })
+        // this.setState({
+        //   currentUser: userData.user
+        // })
+        this.props.fetchUser(userData)
       })
     }
   }
 
   render(){
     // console.log(this.props.allFood)
+    // debugger
     const currentUserID = this.props.currentUser ? this.props.currentUser.id : null
     return (
-      <div>
-        <div className='appHeader'>
-          <h1>Food Culture</h1>
-        </div>
+      <div className='app'>
 
         <div className="topnav">
           <a href="http://localhost:3001/home">Home</a>
-          <a href="http://localhost:3001/login">Log In</a>
-          {this.props.currentUser ?  <input type='button' value='Logout' onClick={this.props.logOut}/> : null}
+          <a href="http://localhost:3001/explore">Explore</a>
+          {this.props.currentUser ? null : <a href="http://localhost:3001/login">Log In</a> }
           {this.props.currentUser ?  <Link to={`/users/${currentUserID}`} >Profile</Link> : null}
+          {this.props.currentUser ?  <input type='button' value='Logout' onClick={this.props.logOut}/> : null}
         </div>
 
-        <div className='loggedInName'>{this.props.currentUser ? <h1>{this.props.currentUser.username}</h1> : null} </div>
+        {/* <div className='loggedInName'>{this.props.currentUser ? <h1>{this.props.currentUser.username}</h1> : null} </div> */}
         <div className='body'>
           <Switch>
             <Route
@@ -71,10 +73,16 @@ class App extends React.Component{
                 return <Signup {...routerProps}  setCurrentUser={this.setCurrentUser}/> 
               }}
             />
+            <Route
+              path='/explore'
+              render={(routerProps) => {
+                return this.props.allFood.length === 0 ? <Loader/> : <Explore {...routerProps} />
+              }}
+            />
             <Route 
               path="/users/:id"
               render={(routerProps) => {
-                return <User allFood={this.props.allFood} {...routerProps}/>
+                return this.props.currentUser ? <User allFood={this.props.allFood} {...routerProps}/> : <Loader/> 
               }}
             />
             <Route
@@ -103,25 +111,31 @@ function mapStateToProps(state){
   }
 }
 
-function mapDispatchToProps(dispatch){
+function mapDispatchToProps(dispatch,props){
   //edit states
   return {
     setCurrentUser: (user) => {
       dispatch({type: "SET_CURRENT_USER", payload: user})
     },
     logOut: (user) => {
+      // debugger
+      // this.context.history.push('/login')
+      // console.log(props)
+      props.history.push('/login')
       dispatch({type: "LOG_OUT", payload: user})
     },
     fetchAllFood: (food) => {
       // debugger
       dispatch({type: "FETCH_ALL_FOOD", payload: food}) 
+    },
+    fetchUser: (user) => {
+      dispatch({type: "FETCH_USER", payload: user})
     }
-
   }
 }
 
 
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(App));
 // export default App
 
 

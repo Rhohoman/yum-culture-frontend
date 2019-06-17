@@ -1,16 +1,34 @@
 import React from 'react'
-import MealCard from './MealCard'
+import FavoriteCard from './FavoriteCard'
+import { Grid, Card } from 'semantic-ui-react';
+import { connect } from 'react-redux';
+
 
 class FavoritesList extends React.Component{
     render(){
+        // console.log(this.props.favorites)
         const favoritesArray = this.props.favorites
         return(
             <div>
                 <h1>Your Favorite Meals</h1>
-                {favoritesArray.map( favoriteMeal => <MealCard {...favoriteMeal} />)}
+                <div className='meal-cards'>
+                    <Grid>
+                        <Card.Group >
+                            {favoritesArray.map( favoriteMeal => <FavoriteCard handleDelete={this.handleDelte} key={favoriteMeal.id} {...favoriteMeal} />)}
+                        </Card.Group>
+                    </Grid>
+                </div>
             </div>
         )
     }
 }
 
-export default FavoritesList
+function mapStateToProps(state){
+    // get state
+    return {
+      favorites: state.favorites,
+    }
+}
+  
+
+export default connect(mapStateToProps)(FavoritesList)

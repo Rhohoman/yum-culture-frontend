@@ -11,6 +11,10 @@ import { Provider } from 'react-redux';
 const defaultState={
   currentUser: null,
   allFood: [],
+  user: null,
+  favorites: [],
+  selectedFood: null,
+  mostFavorited: {},
 }
 
 function reducer(state = defaultState, action){
@@ -19,13 +23,35 @@ function reducer(state = defaultState, action){
     case "SET_CURRENT_USER":
       localStorage.setItem("token", action.payload.jwt)
       return {...state, currentUser: action.payload.user}
+
     case "LOG_OUT":
       // debugger
       localStorage.removeItem('token')
       return {...state, currentUser: action.payload.user}
+
     case "FETCH_ALL_FOOD":
       // debugger
       return {...state, allFood: action.payload}
+
+    case "FETCH_USER":
+      return {...state, currentUser: action.payload.user}
+
+    case "FETCH_USER_AND_FAVORITES":
+      // debugger
+      return {...state, user: action.payload, favorites: action.payload.favorites}
+      
+    case "SELECTED_FOOD":
+      // debugger
+      return {...state, selectedFood: action.payload}
+
+    case "ADD_FAVORITES":
+      return {...state, favorites: action.payload}
+
+    case "DELETE_FAVORITE":
+      console.log('delete')
+      // return {...state, favorites: action.payload}
+    case "SET_MOST_FAVORITE_MEAL":
+      return {...state, mostFavorited: action.payload}
     default:
       return state
   }
@@ -36,9 +62,14 @@ const store = createStore(reducer)
 ReactDOM.render(
     <Provider store={store} >
       <Router>
-        <Route path="/" component={App} />
+        <Route path="/" 
+          render={(routerProps) => {
+            return <App {...routerProps}/>
+          }}
+        />
       </Router>
     </Provider>
     , document.getElementById('root'));
 
 serviceWorker.unregister();
+

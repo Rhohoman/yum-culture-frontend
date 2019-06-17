@@ -34,6 +34,7 @@ class Login extends React.Component{
                 this.props.setCurrentUser(response)
             }
         })
+        .then(() => this.props.history.push('/home')) 
     }
 
 
@@ -44,7 +45,7 @@ class Login extends React.Component{
 
                 <form onSubmit={ this.handleSubmit }>
                     Username: <input onChange={this.handleChange} name='username' value={this.state.username} placeholder='username'/> <br/>
-                    Password: <input onChange={this.handleChange} name='password' value={this.state.password} placeholder='password'/> <br/>
+                    Password: <input onChange={this.handleChange} name='password' value={this.state.password} type='password' placeholder='password'/> <br/>
                     <input type='submit' />
                 </form>
 
@@ -63,7 +64,6 @@ function mapStateToProps(state){
     // get state
     return {
       currentUser: state.currentUser,
-      allFood: state.allFood
     }
 }
   

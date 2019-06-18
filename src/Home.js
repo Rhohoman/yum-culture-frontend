@@ -96,7 +96,7 @@ class Home extends React.Component{
 
                 {this.state.browseButton ? 
 
-                <div>
+                <React.Fragment>
                     <div className='home'>
                         <h3>View Foods</h3>
                     </div>
@@ -118,14 +118,12 @@ class Home extends React.Component{
                             </Button.Group>
                         </Container>
                     </div>
-                    <div className='meal-cards'>
-                        <Grid >
-                            <Card.Group>
-                                {this.state.filterValue === 'All' ? this.props.allFood.map( meal => <MealCard key={meal.id} {...meal}/>) : this.props.allFood.filter(food => food.categories.includes(this.state.filterValue)).map( meal => <MealCard key={meal.id} {...meal}/>)}
-                            </Card.Group>
-                        </Grid>
-                    </div>
-                </div>
+                    <Container>
+                        <Card.Group itemsPerRow={6}>
+                            {this.state.filterValue === 'All' ? this.props.allFood.map( meal => <MealCard key={meal.id} {...meal}/>) : this.props.allFood.filter(food => food.categories.includes(this.state.filterValue)).map( meal => <MealCard key={meal.id} {...meal}/>)}
+                        </Card.Group>
+                    </Container>
+                </React.Fragment>
 
                 : null}
             </div>
@@ -143,9 +141,3 @@ function mapStateToProps(state){
 
 
 export default connect(mapStateToProps)(Home)
-
-
-
-                {/* <Grid relaxed columns={8}>
-                        {this.props.allFood.map( meal => <MealCard key={meal.id} {...meal}/>)}
-                </Grid> */}

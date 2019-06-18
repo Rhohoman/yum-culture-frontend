@@ -18,6 +18,7 @@ class User extends React.Component{
         .then(response => response.json())
         .then(response => {
             this.props.fetchUserData(response)
+            this.changeKeyForSearch()
         })
     }
 
@@ -28,7 +29,8 @@ class User extends React.Component{
             return food 
         } )
 
-        return fixedArray
+        this.props.setDropdownOptions(fixedArray)
+        // return fixedArray
     }
 
     handleChange = (e) => {
@@ -69,18 +71,9 @@ class User extends React.Component{
     }
 
     addingMealToFavorites = (favorite) => {
-                const copyFavoritesArray = [...this.props.favorites]
-                copyFavoritesArray.push(favorite)
-                this.props.addFavorites(copyFavoritesArray)
-
-        // const copyFavoritesArray = [...this.props.favorites]
-        // // console.log(favorite)
-
-        // const names = this.props.favorites.map(fav => fav.name)
-
-        // if(!names.includes(favorite.name)){
-        //     copyFavoritesArray.push(favorite)
-        //     this.props.addFavorites(copyFavoritesArray)
+        const copyFavoritesArray = [...this.props.favorites]
+        copyFavoritesArray.push(favorite)
+        this.props.addFavorites(copyFavoritesArray)
     }
 
     deleteMealFromFavorites = (favorite) =>{
@@ -103,8 +96,10 @@ class User extends React.Component{
                     {this.props.user ? <p>Location: {this.props.user.location}</p> : null}
                     {this.props.user ? <p>Username: {this.props.user.username}</p> : null}
                 </div>
-                <div>
-                    <h2>Add to Favorites</h2>
+                <div>  
+                    <div className='title'>
+                        <h2>Add to Favorites</h2>
+                    </div>
                     <Dropdown
                     onChange={this.handleChange}
                     placeholder='Select an option to add'
@@ -113,7 +108,7 @@ class User extends React.Component{
                     selection
                     value={this.props.selectedFood ? this.props.selectedFood.name : ''}
                     selectOnNavigation={false}
-                    options={this.changeKeyForSearch()}
+                    options={this.props.optionsArray}
                     />
                 </div>
                 {this.props.favorites.length === 0 ? null : <FavoritesList favorites={this.props.favorites} />}
@@ -128,6 +123,7 @@ function mapStateToProps(state){
       user: state.user,
       favorites: state.favorites,
       selectedFood: state.selectedFood,
+      optionsArray: state.optionsArray,
     }
 }
   
@@ -145,6 +141,9 @@ function mapDispatchToProps(dispatch){
         },
         deleteFavorite: (favorites) => {
             dispatch({type: "DELETE_FAVORITE", payload: favorites})
+        },
+        setDropdownOptions: (foods) => {
+            dispatch({type: "DROPDOWN_ARRAY", payload: foods})
         }
     }
 }

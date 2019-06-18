@@ -15,6 +15,9 @@ const defaultState={
   favorites: [],
   selectedFood: null,
   mostFavorited: {},
+  optionsArray: [],
+  allPosts: [],
+  usersArray: [],
 }
 
 function reducer(state = defaultState, action){
@@ -50,8 +53,22 @@ function reducer(state = defaultState, action){
     case "DELETE_FAVORITE":
       console.log('delete')
       // return {...state, favorites: action.payload}
+
     case "SET_MOST_FAVORITE_MEAL":
       return {...state, mostFavorited: action.payload}
+
+    case "DROPDOWN_ARRAY":
+      return {...state, optionsArray: action.payload}
+
+    case "ALL_POSTS":
+      return {...state, allPosts: action.payload}
+
+    case "ADD_POST":
+      return {...state, allPosts: action.payload}
+
+    case "SET_USER_ARRAY":
+      return {...state, usersArray: action.payload}
+
     default:
       return state
   }

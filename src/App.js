@@ -6,6 +6,7 @@ import Home from './Home';
 import User from './User';
 import Explore from './Explore';
 import Loader from './Loader';
+import Forum from './Forum';
 import { Switch, Route, Redirect, Link, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 
@@ -53,6 +54,7 @@ class App extends React.Component{
         <div className="topnav">
           <a href="http://localhost:3001/home">Home</a>
           <a href="http://localhost:3001/explore">Explore</a>
+          <a href="http://localhost:3001/forum">Forum</a>
           {this.props.currentUser ? null : <a href="http://localhost:3001/login">Log In</a> }
           {this.props.currentUser ?  <Link to={`/users/${currentUserID}`} >Profile</Link> : null}
           {this.props.currentUser ?  <input type='button' value='Logout' onClick={this.props.logOut}/> : null}
@@ -77,6 +79,12 @@ class App extends React.Component{
               path='/explore'
               render={(routerProps) => {
                 return this.props.allFood.length === 0 ? <Loader/> : <Explore {...routerProps} />
+              }}
+            />
+            <Route
+              path='/forum'
+              render={(routerProps) => {
+                return this.props.allFood.length === 0 ? <Loader/> : <Forum {...routerProps} />
               }}
             />
             <Route 
@@ -136,23 +144,3 @@ function mapDispatchToProps(dispatch,props){
 
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(App));
-// export default App
-
-
-
-// React 
-	// setCurrentUser = (data) => {
-	// 	localStorage.setItem("token", data.jwt)
-	// 	this.setState({
-	// 		currentUser: data.user
-	// 	},() => console.log(this.props.currentUser))
-	// }
-
-   // logOut = () => {
-	// 	localStorage.removeItem('token')
-	// 	this.setState({
-	// 		currentUser: null
-	// 	}, () => {
-	// 		this.props.history.push("/login")
-	// 	})
-  // }

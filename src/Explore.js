@@ -18,31 +18,16 @@ class Explore extends React.Component{
         let meal = foodArray.find( meal => meal.name === mostFavHalf[0])
         this.props.setMostFavorite(meal)
     }
-
-    // youtubeLinkSlice = () => {
-    //     const youtube_link = this.props.mostFavorited.youtube_url
-    //     const id = youtube_link.slice(32,43)
-    //     const source = youtube_link.slice(12,19)
-
-    //     if(youtube_link){
-
-    //     }
-    // }
-
     render(){
-        // const allFoodArray = this.props.allFood
 
-        // console.log(this.props.mostFavorited.youtube_url)
         const youtube_link = this.props.mostFavorited.youtube_url
         const youtube_id = youtube_link ? youtube_link.slice(32,43) : null
         const youtube_source = youtube_link ? youtube_link.slice(12,19) : null
 
-        // debugger
         const randomItem = this.props.allFood[Math.floor(Math.random()*this.props.allFood.length)]
-        console.log(randomItem.youtube_url)
-        // const randomItem_youtube_link = randomItem ? randomItem.youtube_url : null
-        // const randomItem_youtube_link_id = randomItem_youtube_link !== null ? randomItem.youtube_link.slice(32,43) : null
-        // const randomItem_youtube_link_source = randomItem_youtube_link ? randomItem.youtube_link.slice(12,19) : null
+        const randomItem_youtube_link = randomItem ? randomItem.youtube_url : null
+        const randomItem_youtube_id = randomItem_youtube_link ? randomItem_youtube_link.slice(32,43) : null
+        const randomItem_youtube_source = randomItem_youtube_link ? randomItem_youtube_link.slice(12,19) : null
 
         return(
             <div>
@@ -70,7 +55,7 @@ class Explore extends React.Component{
                 <Modal trigger={<Button>Show Instructions</Button>}>
                     <Modal.Header>{randomItem.name}</Modal.Header>
                     <Modal.Content >
-                    <Embed wrapped size='medium' id={youtube_id} source={youtube_source}/>
+                    <Embed wrapped size='medium' id={randomItem_youtube_id} source={randomItem_youtube_source}/>
                     <Modal.Description>
                         <Header>Instructions</Header>
                         <p>{randomItem.instructions}</p>

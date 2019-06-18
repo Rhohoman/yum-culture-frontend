@@ -10,14 +10,14 @@ class FavoritesList extends React.Component{
         const favoritesArray = this.props.favorites
         return(
             <div>
-                <h1>Your Favorite Meals</h1>
-                <div className='meal-cards'>
-                    <Grid>
-                        <Card.Group >
-                            {favoritesArray.map( favoriteMeal => <FavoriteCard handleDelete={this.handleDelte} key={favoriteMeal.id} {...favoriteMeal} />)}
-                        </Card.Group>
-                    </Grid>
+                <div className='title'>
+                    <h1>Your Favorite Meals</h1>
                 </div>
+                <Grid>
+                    <Card.Group >
+                        {favoritesArray.map( favoriteMeal => <FavoriteCard handleDelete={this.handleDelte} key={favoriteMeal.id} {...favoriteMeal} />)}
+                    </Card.Group>
+                </Grid>
             </div>
         )
     }

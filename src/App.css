@@ -64,20 +64,12 @@
     text-align: center;
     /* margin: 200px; */
 }
-
-.meal-cards{
-    padding-top: 50px;
-    /* padding-left: 100px;
-    padding-right: 100px; */
-}
-
-.mealcard{
-    padding-left: 25px;
-    padding-right: 25px;
-    padding-top: 15px;
-}
-
 .button-group{
     padding-top: 20px;
+    padding-bottom: 20px;
 }
 
+.title{
+    padding-bottom: 40px;
+    padding-top: 20px;
+}

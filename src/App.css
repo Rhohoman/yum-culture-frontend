@@ -1,8 +1,6 @@
 
 .app{
-    /* background-color: #fffafa; */
-
-    /* position: relative; */
+    background-color: #fffafa;
     padding:0;
     margin:0;
     top:0;
@@ -59,7 +57,7 @@
 }
 
 .footer {
-    padding-top: 400px;
+    padding-top: 750px;
     text-align: center;
 }
 
@@ -89,4 +87,8 @@
     display: block;
     max-width: 100%!important;
     text-align: center;
+}
+
+.profile-icon{
+    margin-left: 90%;
 }

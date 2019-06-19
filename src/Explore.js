@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Button, Header, Container, Modal, Embed } from 'semantic-ui-react'
+import { Button, Header, Container, Modal, Embed, Segment } from 'semantic-ui-react'
 
 class Explore extends React.Component{
 
@@ -33,37 +33,39 @@ class Explore extends React.Component{
             <Container>
                 <h1>Explore</h1>
 
+                <Segment>
+                    <h3>This week's most favorited food is...</h3>
+                    {this.props.mostFavorited.name} <br />
+                    <img src={this.props.mostFavorited.image} alt='IMAGE' width="250" height="300" /> <br/>
 
-                <h3>This week's most favorited food is...</h3>
-                {this.props.mostFavorited.name} <br />
-                <img src={this.props.mostFavorited.image} alt='IMAGE' width="250" height="300" /> <br/>
+                    <Modal trigger={<Button>Show Instructions</Button>}>
+                        <Modal.Header>{this.props.mostFavorited.name}</Modal.Header>
+                        <Modal.Content >
+                        <Embed wrapped size='medium' id={youtube_id} source={youtube_source}/>
+                        <Modal.Description>
+                            <Header>Instructions</Header>
+                            <p>{this.props.mostFavorited.instructions}</p>
+                        </Modal.Description>
+                        </Modal.Content>
+                    </Modal>
+                </Segment>
 
-                <Modal trigger={<Button>Show Instructions</Button>}>
-                    <Modal.Header>{this.props.mostFavorited.name}</Modal.Header>
-                    <Modal.Content >
-                    <Embed wrapped size='medium' id={youtube_id} source={youtube_source}/>
-                    <Modal.Description>
-                        <Header>Instructions</Header>
-                        <p>{this.props.mostFavorited.instructions}</p>
-                    </Modal.Description>
-                    </Modal.Content>
-                </Modal>
+                <Segment>
+                    <h3>Random Food</h3>
+                    {randomItem ? randomItem.name : null} <br />
+                    <img src={randomItem ? randomItem.image : null} alt='IMAGE' width="250" height="300" /> <br/>
 
-                <h1>Random Food</h1>
-                {randomItem ? randomItem.name : null} <br />
-                <img src={randomItem ? randomItem.image : null} alt='IMAGE' width="250" height="300" /> <br/>
-
-                <Modal trigger={<Button>Show Instructions</Button>}>
-                    <Modal.Header>{randomItem.name}</Modal.Header>
-                    <Modal.Content >
-                    <Embed wrapped size='medium' id={randomItem_youtube_id} source={randomItem_youtube_source}/>
-                    <Modal.Description>
-                        <Header>Instructions</Header>
-                        <p>{randomItem.instructions}</p>
-                    </Modal.Description>
-                    </Modal.Content>
-                </Modal>
-
+                    <Modal trigger={<Button>Show Instructions</Button>}>
+                        <Modal.Header>{randomItem.name}</Modal.Header>
+                        <Modal.Content >
+                        <Embed wrapped size='medium' id={randomItem_youtube_id} source={randomItem_youtube_source}/>
+                        <Modal.Description>
+                            <Header>Instructions</Header>
+                            <p>{randomItem.instructions}</p>
+                        </Modal.Description>
+                        </Modal.Content>
+                    </Modal>
+                </Segment>
             </Container>
         )
     }

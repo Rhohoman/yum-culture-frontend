@@ -1,5 +1,5 @@
 import React from 'react'
-import { Feed, Icon, Form, Input, TextArea, Button, Select, Modal, Container }from 'semantic-ui-react';
+import { Feed, Icon, Form, Input, TextArea, Button, Select, Modal, Container, Label }from 'semantic-ui-react';
 import { connect } from 'react-redux';
 
 
@@ -92,7 +92,7 @@ class Forum extends React.Component{
     }
 
     postThePost = () => {
-        debugger
+        // debugger
         fetch('http://localhost:3000/posts', {
             method: 'POST',
             headers: {
@@ -133,38 +133,35 @@ class Forum extends React.Component{
         }
     }
 
+    incrementLike = (postId,likes) => {
+        // event would be the button on the post which I can also pass in to change its data and then send it to the back
+        //if the button is a like add one to lieks if dislike add one to dislike
+        console.log('postid: ',postId)
+        console.log('likes: ',likes)
+        let newLikes = likes + 1
+        fetch(`http://localhost:3000/posts/${postId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({
+                likes: newLikes
+            })
+        })
+        .then(response => response.json())
+        .then(data => console.log(data))
+    }
+
     render(){
         return(
             <div >
-                <h1>Forum</h1>
                 <Container>
-                    {/* <Feed.Event>
-                        <Feed.Content>
-                            <Feed.Summary>
-                            <a>Justen Kitsune</a> added <a>2 new photos</a> of you
-                            <Feed.Date>4 days ago</Feed.Date>
-                            </Feed.Summary>
-                            <Feed.Extra images>
-                            <a>
-                                <img src='/images/wireframe/image.png' />
-                            </a>
-                            <a>
-                                <img src='/images/wireframe/image.png' />
-                            </a>
-                            </Feed.Extra>
-                            <Feed.Meta>
-                            <Feed.Like>
-                                <Icon name='like' />
-                                41 Likes
-                            </Feed.Like>
-                            </Feed.Meta>
-                        </Feed.Content>
-                    </Feed.Event> */}
-
+                <h1>Forum</h1>
                     {this.props.allPosts ? 
                         this.props.allPosts.map(post => 
                             <Feed size='large'>
-                            {/* {console.log(post)} */}
+                            {console.log(post)}
                                 <Feed.Event>
                                 <Feed.Label image={post.profile_image_url} />
                                     <Feed.Content>
@@ -185,18 +182,27 @@ class Forum extends React.Component{
                                         </Feed.Extra>
 
                                         <Feed.Meta>
-                                            <Feed.Like>
-                                                <Icon name='like' />
-                                                5 Likes
-                                            </Feed.Like>
+                                            <Button as='div' labelPosition='right' onClick={() => this.incrementLike(post.id,post.likes)} value={post.likes}>
+                                                <Button icon >
+                                                    <Icon name='heart' />
+                                                    Like
+                                                </Button>
+                                                <Label as='a' basic pointing='left'>
+                                                    {post.likes}
+                                                </Label>
+                                            </Button>
+
+                                            <Button as='div' labelPosition='left'>
+                                                <Label as='a' basic pointing='right'>
+                                                    {post.dislikes}
+                                                </Label>
+                                                <Button icon >
+                                                    <Icon name='heart' />
+                                                    Dislike
+                                                </Button>
+                                            </Button>
                                         </Feed.Meta>
-                                        
-                                        <Feed.Meta>
-                                            <Feed.Like>
-                                                <Icon name='thumbs down'/>
-                                                5 Dislikes
-                                            </Feed.Like>
-                                        </Feed.Meta>
+
 
                                     </Feed.Content>
                                 </Feed.Event>        
@@ -222,7 +228,7 @@ class Forum extends React.Component{
                             value={this.state.username}
                             onChange={this.handleChange}
                             />
-                            {console.log(this.state.food)}
+                            {/* {console.log(this.state.food)} */}
                         <Form.Field
                             control={Select}
                             options={this.props.optionsArray}

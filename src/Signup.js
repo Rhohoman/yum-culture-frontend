@@ -1,5 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux';
+import { Button, Form, Segment, Container, Header} from 'semantic-ui-react';
+
 
 class Signup extends React.Component{
 
@@ -42,17 +44,40 @@ class Signup extends React.Component{
 
     render(){
         return(
-            <div>
-                <h1>Signup</h1>
-                    <form onSubmit={this.handleSubmit} >
-                        Name: <input onChange={this.handleChange} name='name' value={this.state.name} placeholder='name'/> <br/>
-                        Location: <input onChange={this.handleChange} name='location' value={this.state.location} placeholder='location'/> <br/>
-                        Profile Picture: <input onChange={this.handleChange} name='user_picture' value={this.state.user_icture} placeholder='profile picture'/> <br/>
-                        Username: <input onChange={this.handleChange} name='username' value={this.state.username} placeholder='username'/> <br/>
-                        Password: <input onChange={this.handleChange} name='password' value={this.state.password} placeholder='password' type='password'/> <br/>
-                        <input type='submit' value='Submit'/> 
-                    </form>
-            </div>
+            <Container>
+                <Segment>        
+                    <Form onSubmit={ this.handleSubmit }>
+                        <Header as='h1' floated='left'>Signup</Header> <br/><br/><br/>
+                        <Header as='h4' floated='left'>Name</Header>
+                        <Form.Field>
+                            <input onChange={this.handleChange} name='name' value={this.state.name} placeholder='name'/>
+                        </Form.Field>
+
+                        <Header as='h4' floated='left'>Location</Header>
+                        <Form.Field>
+                        <input onChange={this.handleChange} name='location' value={this.state.location} placeholder='location'/>
+                        </Form.Field>
+
+                        <Header as='h4' floated='left'>Profile Picture</Header>
+                        <Form.Field>
+                        <input onChange={this.handleChange} name='user_picture' value={this.state.user_picture} placeholder='profile picture'/> 
+                        </Form.Field>
+
+                        <Header as='h4' floated='left'>Username</Header>
+                        <Form.Field>
+                        <input onChange={this.handleChange} name='username' value={this.state.username} placeholder='username'/> 
+                        </Form.Field>
+
+                        <Header as='h4' floated='left'>Password</Header>
+                        <Form.Field floated='left'>
+                                <input onChange={this.handleChange} name='password' value={this.state.password} type='password' placeholder='Password' />
+                        </Form.Field>
+                        <br />
+                        <Button type='submit'>Submit</Button>
+                    </Form>
+                    <br /><br />
+                </Segment>
+            </Container>
         )
     }
 }

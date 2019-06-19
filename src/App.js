@@ -9,7 +9,7 @@ import Loader from './Loader';
 import Forum from './Forum';
 import { Switch, Route, Redirect, Link, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { Label } from 'semantic-ui-react'
+import { Label, Icon } from 'semantic-ui-react'
 
 
 class App extends React.Component{
@@ -50,18 +50,24 @@ class App extends React.Component{
             <a href="http://localhost:3001/forum">Forum</a>
             {this.props.currentUser ? null : <a href="http://localhost:3001/login">Log In</a> }
             {this.props.currentUser ?  <b><Link to={`/users/${currentUserID}`} >Profile</Link></b> : null}
-            {this.props.currentUser ?  <input type='button' value='Logout' onClick={this.props.logOut}/> : null}
              
           </div>
         </div>
 
-        <div className='loggedInName'>{this.props.currentUser ? <h1>{this.props.currentUser.username}</h1> : null} </div>
-        {console.log(this.props.currentUser)}
-
-        <Label as='a' image>
-          <img src={this.props.currentUser ? this.props.currentUser.user_picture: null} />
-          {this.props.currentUser ? this.props.currentUser.username : null}
-        </Label>
+        <div className='profile-icon'>
+          {this.props.currentUser ?
+            <Label as='a' image size='medium' floated='right'>
+              <a href={`http://localhost:3001/users/${currentUserID}`}><img src={this.props.currentUser ? this.props.currentUser.user_picture: null} /></a>
+              {this.props.currentUser ? this.props.currentUser.username : null}
+              <Label.Detail onClick={this.props.logOut}>
+                LogOut
+                {this.props.currentUser ?  <Icon disabled name='power off'/> : null}
+              </Label.Detail>
+            </Label>
+              :
+              null
+          }
+        </div>
 
         <div className='body'>
           <Switch>

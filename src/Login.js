@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux';
-
+import { Button, Form, Segment, Container, Header} from 'semantic-ui-react';
 
 class Login extends React.Component{
 
@@ -40,22 +40,29 @@ class Login extends React.Component{
 
     render(){
         return(
-            <div>
-                <h1>Login Page</h1>
+            <Container>
+                <Segment>        
+                    <Form onSubmit={ this.handleSubmit }>
+                        <Header as='h1' floated='left'>Login</Header> <br/><br/><br/>
+                        <Header as='h4' floated='left'>Username</Header>
+                        <Form.Field>
+                            <input onChange={this.handleChange} name='username' value={this.state.username} placeholder='Username' />
+                        </Form.Field>
 
-                <form onSubmit={ this.handleSubmit }>
-                    Username: <input onChange={this.handleChange} name='username' value={this.state.username} placeholder='username'/> <br/>
-                    Password: <input onChange={this.handleChange} name='password' value={this.state.password} type='password' placeholder='password'/> <br/>
-                    <input type='submit' />
-                </form>
+                        <Header as='h4' floated='left'>Password</Header>
+                        <Form.Field floated='left'>
+                                <input onChange={this.handleChange} name='password' value={this.state.password} type='password' placeholder='Password' />
+                        </Form.Field>
 
-                <br/>
-
-                <div>
-                    <p>Haven't Signed up yet?</p>
-                    <a href="http://localhost:3001/signup">Sign Up</a>
-                </div>
-            </div>
+                        <Button type='submit'>Submit</Button>
+                    </Form>
+                    <br /><br />
+                    <b>Forgot your password?  </b>
+                    <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ">Click here to reset</a><br />
+                    <b>Haven't Signed up yet?  </b>
+                    <a href="http://localhost:3001/signup">Sign Up </a>
+                </Segment>
+            </Container>
         )
     }
 }

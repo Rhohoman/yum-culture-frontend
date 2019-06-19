@@ -1,10 +1,7 @@
 import React from 'react';
 import MealCard from './MealCard';
 import { Card, Container, Divider, Button} from 'semantic-ui-react';
-import {
-    Header,
-    Icon,
-  } from 'semantic-ui-react'
+import { Header } from 'semantic-ui-react';
 import { connect } from 'react-redux';
 
 class Home extends React.Component{
@@ -67,15 +64,11 @@ class Home extends React.Component{
                     }}
                     />
 
-                    <div className='name' >
-                        {this.props.currentUser ? <h1>{this.props.currentUser.username}</h1> : null}
-                    </div>
-
                 </Container>
 
                 
 
-                <Container textAlign='justified'>
+                <Container textAlign='justified' style={{fontFamily:'cursive'}}>
                     <Divider />
                     <br/>
                     <p>
@@ -137,7 +130,7 @@ class Home extends React.Component{
                 {this.state.browseButton ? 
 
                 <React.Fragment>
-                    <div className='home'>
+                    <div className='home' >
                         <h3>View Foods</h3>
                     </div>
                     <div className='button-group'>

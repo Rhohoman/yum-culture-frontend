@@ -1,6 +1,6 @@
 
 .app{
-    background-color: #fffafa;
+    /* background-color: #fffafa; */
 
     /* position: relative; */
     padding:0;
@@ -22,6 +22,15 @@
     text-align: center;
 }
 
+.ui.text.container {
+    font-size: 1.14285714rem;
+    text-align: center;
+}
+
+.navbar{
+    padding-bottom: 50px;
+}
+
 .topnav {
     overflow: hidden;
     background-color: #333;
@@ -41,10 +50,6 @@
     color: black;
 }
 
-.loggedInName {
-    text-align: center;
-    padding-bottom: 30px; 
-}
 
 .body{
     height: 100%;
@@ -54,16 +59,16 @@
 }
 
 .footer {
-    padding: 10px;
+    padding-top: 400px;
     text-align: center;
 }
 
 .home {
-    padding-top: 30px;
-    padding-bottom: 50px;
+    padding-top:100px;
+    padding-bottom: 80px;
     text-align: center;
-    /* margin: 200px; */
 }
+
 .button-group{
     padding-top: 20px;
     padding-bottom: 20px;
@@ -72,4 +77,16 @@
 .title{
     padding-bottom: 40px;
     padding-top: 20px;
+}
+
+.name {
+    padding-top:100px;
+    padding-bottom: 80px;
+    text-align: center;
+}
+
+.ui.container {
+    display: block;
+    max-width: 100%!important;
+    text-align: center;
 }

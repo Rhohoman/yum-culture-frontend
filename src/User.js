@@ -2,14 +2,13 @@ import React from 'react'
 import { Dropdown } from 'semantic-ui-react'
 import FavoritesList from './FavoritesList';
 import { connect } from 'react-redux';
-
+import Loader from './Loader';
 
 
 class User extends React.Component{
 
     componentDidMount(){
         const userId = this.props.match.params.id
-        // debugger
         fetch(`http://localhost:3000/users/${userId}`, {
             headers: {
                 "Authorization": `Bearer ${localStorage.getItem("token")}`
@@ -86,32 +85,39 @@ class User extends React.Component{
     }
 
     render(){
-        // console.log(this.props.allFood)
+        // console.log(this.props.user)
         // console.log(this.state.user ? this.state.user.favorites : null)
         return(
             <div>
-                <div>
-                    <h1>User Display page</h1>
-                    {this.props.user ? <p>Name: {this.props.user.name}</p> : null}
-                    {this.props.user ? <p>Location: {this.props.user.location}</p> : null}
-                    {this.props.user ? <p>Username: {this.props.user.username}</p> : null}
-                </div>
-                <div>  
-                    <div className='title'>
-                        <h2>Add to Favorites</h2>
+                {this.props.user ? 
+                    <div>
+                        <div>
+                            <h1>User Display page</h1>
+                            {this.props.user ? <img src={this.props.user.user_picture}/> : null}
+                            {this.props.user ? <p>Name: {this.props.user.name}</p> : null}
+                            {this.props.user ? <p>Location: {this.props.user.location}</p> : null}
+                            {this.props.user ? <p>Username: {this.props.user.username}</p> : null}
+                        </div>
+                        <div>  
+                            <div className='title'>
+                                <h2>Add to Favorites</h2>
+                            </div>
+                            <Dropdown
+                            onChange={this.handleChange}
+                            placeholder='Select an option to add'
+                            fluid
+                            search
+                            selection
+                            value={this.props.selectedFood ? this.props.selectedFood.name : ''}
+                            selectOnNavigation={false}
+                            options={this.props.optionsArray}
+                            />
+                        </div>
+                        {this.props.favorites.length === 0 ? null : <FavoritesList favorites={this.props.favorites} />}
                     </div>
-                    <Dropdown
-                    onChange={this.handleChange}
-                    placeholder='Select an option to add'
-                    fluid
-                    search
-                    selection
-                    value={this.props.selectedFood ? this.props.selectedFood.name : ''}
-                    selectOnNavigation={false}
-                    options={this.props.optionsArray}
-                    />
-                </div>
-                {this.props.favorites.length === 0 ? null : <FavoritesList favorites={this.props.favorites} />}
+                        : 
+                    <Loader/>
+                }
             </div>
         )
     }

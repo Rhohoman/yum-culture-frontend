@@ -13,6 +13,7 @@ class Forum extends React.Component{
         user_id: 0,
         food_id: 0,
         food_image_url: '',
+        user_image_url: '',
     }
 
 
@@ -47,12 +48,13 @@ class Forum extends React.Component{
     handleChange = (event) => {
         console.log('value: ', event.target.value)
         //here I get a users name
+        // debugger
         this.setState({
             [event.target.name]: event.target.value
         })
     }
     
-    handleChangeFood = (event, value) => {
+    handleChangeFood = (event) => {
         // debugger
         console.log(event.target.innerText)
         //thing about this is all I get is a name text which means I have to find that object wiht its name
@@ -68,6 +70,11 @@ class Forum extends React.Component{
         })
     }
 
+    handleSubmit = (event) => {
+        event.preventDefault()
+        this.getNecessaryInfo()
+    }
+
     getNecessaryInfo = () => {
         this.findingUserAndFood()
     }
@@ -76,17 +83,16 @@ class Forum extends React.Component{
         let userObj = this.state.usersArray.find(user => user.username === this.state.username)
         let allFoodCopy = this.props.allFood
         let foodObj = allFoodCopy.find(food => food.name === this.state.food)
-        // debugger
-
         this.setState({
             user_id: userObj.id,
+            user_image_url: userObj.user_picture,
             food_id: foodObj.id,
             food_image_url: foodObj.image,
         },() => this.postThePost())
     }
 
     postThePost = () => {
-        // debugger
+        debugger
         fetch('http://localhost:3000/posts', {
             method: 'POST',
             headers: {
@@ -95,9 +101,11 @@ class Forum extends React.Component{
             },
             body: JSON.stringify({
                 user_id: this.state.user_id,
+                // this.props.currentUser.id
                 food_id: this.state.food_id,
                 username: this.state.username,
                 image_url: this.state.food_image_url,
+                profile_image_url: this.state.user_image_url,
                 text: this.state.opinion,
                 likes: 0,
                 dislikes: 0,
@@ -106,20 +114,16 @@ class Forum extends React.Component{
         .then(res => res.json())
         .then(data => {
             // debugger
-            this.addPost(data)
+            this.addAPost(data)
         })
     }
 
-    handleSubmit = (event) => {
-        event.preventDefault()
-        this.getNecessaryInfo()
-    }
-
-    addPost = (post) => {
+    addAPost = (post) => {
         // debugger
         let copyAllPosts = [...this.props.allPosts]
         copyAllPosts.push(post)
         this.props.addPost(copyAllPosts)
+        //reducer
     }
 
     findUserReturnName = (postUser) => {
@@ -159,10 +163,10 @@ class Forum extends React.Component{
 
                     {this.props.allPosts ? 
                         this.props.allPosts.map(post => 
-                            <Feed>
-                            {console.log(post)}
+                            <Feed size='large'>
+                            {/* {console.log(post)} */}
                                 <Feed.Event>
-                                <Feed.Label image={post.image_url} />
+                                <Feed.Label image={post.profile_image_url} />
                                     <Feed.Content>
 
                                         <Feed.Summary>
@@ -201,6 +205,8 @@ class Forum extends React.Component{
                     :
                         null
                     }
+                
+                {this.props.currentUser ? 
 
                 <Modal trigger={<Button>Write a Post</Button>}>
                     <Modal.Header>Form</Modal.Header>
@@ -211,16 +217,17 @@ class Forum extends React.Component{
                             id='form-input-control-username'
                             control={Input}
                             label='Username'
-                            placeholder='Username'
+                            placeholder='username'
                             name='username'
                             value={this.state.username}
                             onChange={this.handleChange}
                             />
+                            {console.log(this.state.food)}
                         <Form.Field
                             control={Select}
                             options={this.props.optionsArray}
                             label={{ children: 'Food', htmlFor: 'form-select-control-gender' }}
-                            placeholder={this.props.food}
+                            placeholder={this.state.food ? this.state.food : 'Search Food'}
                             search
                             searchInput={{ id: 'form-select-control-food' }}
                             name='food'
@@ -236,16 +243,19 @@ class Forum extends React.Component{
                             placeholder='Opinion'
                             name='opinion'
                             onChange={this.handleChangeOpinion}
-                        />
+                            />
 
                         <Form.Field
                             id='form-button-control-public'
                             control={Button}
                             content='Post'
-                        />
+                            />
                     </Form>
                     </Modal.Content>
                 </Modal>
+                    : 
+                null
+                }
                 </Container>
             </div>
         )

@@ -1,6 +1,10 @@
 import React from 'react';
 import MealCard from './MealCard';
-import { Card, Container, Divider, Button, Grid } from 'semantic-ui-react';
+import { Card, Container, Divider, Button} from 'semantic-ui-react';
+import {
+    Header,
+    Icon,
+  } from 'semantic-ui-react'
 import { connect } from 'react-redux';
 
 class Home extends React.Component{
@@ -29,11 +33,47 @@ class Home extends React.Component{
         // console.log(this.props.allFood.filter(food => food.categories.includes('Beef')))
         return(
             <div>
-                <div className='home' >
-                    <h1>Welcome to Food Culture</h1>
-                </div>
+                
+                <Container text >
+                    <Header
+                    as='h1'
+                    content='Yum Culture'
+                    // inverted
+                    style={{
+                        fontFamily: 'cursive',
+                        fontSize: '4em',
+                        fontWeight: 'normal',
+                        marginBottom: 0,
+                        marginTop: '3em',
+                    }}
+                    />
+                    <Header
+                    as='h2'
+                    content='.  .   .'
+                    style={{
+                        fontSize: '1.7em',
+                        fontWeight: 'normal',
+                        marginTop: '1.5em',
+                    }}
+                    />
+                    <Header
+                    as='h2'
+                    content='Learn to eat, eat to learn.'
+                    style={{
+                        fontStyle: 'italic',
+                        fontSize: '1.7em',
+                        fontWeight: 'normal',
+                        marginTop: '1.5em',
+                    }}
+                    />
 
-                <div className='loggedInName'>{this.props.currentUser ? <h1>{this.props.currentUser.username}</h1> : null} </div>
+                    <div className='name' >
+                        {this.props.currentUser ? <h1>{this.props.currentUser.username}</h1> : null}
+                    </div>
+
+                </Container>
+
+                
 
                 <Container textAlign='justified'>
                     <Divider />

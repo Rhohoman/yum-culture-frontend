@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Button, Header, Image, Modal, Embed } from 'semantic-ui-react'
+import { Button, Header, Container, Modal, Embed } from 'semantic-ui-react'
 
 class Explore extends React.Component{
 
@@ -30,8 +30,9 @@ class Explore extends React.Component{
         const randomItem_youtube_source = randomItem_youtube_link ? randomItem_youtube_link.slice(12,19) : null
 
         return(
-            <div>
+            <Container>
                 <h1>Explore</h1>
+
 
                 <h3>This week's most favorited food is...</h3>
                 {this.props.mostFavorited.name} <br />
@@ -63,7 +64,7 @@ class Explore extends React.Component{
                     </Modal.Content>
                 </Modal>
 
-            </div>
+            </Container>
         )
     }
 }

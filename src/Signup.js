@@ -8,6 +8,7 @@ class Signup extends React.Component{
         location: "",
         username: "",
         password: "",
+        user_picture: "",
     }
     handleChange = (event) => {
         console.log(event.target.name,": ", event.target.value)
@@ -46,8 +47,9 @@ class Signup extends React.Component{
                     <form onSubmit={this.handleSubmit} >
                         Name: <input onChange={this.handleChange} name='name' value={this.state.name} placeholder='name'/> <br/>
                         Location: <input onChange={this.handleChange} name='location' value={this.state.location} placeholder='location'/> <br/>
+                        Profile Picture: <input onChange={this.handleChange} name='user_picture' value={this.state.user_icture} placeholder='profile picture'/> <br/>
                         Username: <input onChange={this.handleChange} name='username' value={this.state.username} placeholder='username'/> <br/>
-                        Password: <input onChange={this.handleChange} name='password' value={this.state.password} placeholder='password'/> <br/>
+                        Password: <input onChange={this.handleChange} name='password' value={this.state.password} placeholder='password' type='password'/> <br/>
                         <input type='submit' value='Submit'/> 
                     </form>
             </div>

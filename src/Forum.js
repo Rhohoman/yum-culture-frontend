@@ -1,5 +1,5 @@
 import React from 'react'
-import { Feed, Icon, Form, Input, TextArea, Button, Select, Modal, Container, Label }from 'semantic-ui-react';
+import { Feed, Icon, Form, Input, TextArea, Button, Select, Modal, Container, Label, Segment, Divider }from 'semantic-ui-react';
 import { connect } from 'react-redux';
 
 
@@ -12,8 +12,10 @@ class Forum extends React.Component{
         usersArray: [],
         user_id: 0,
         food_id: 0,
+        foodName: '',
         food_image_url: '',
         user_image_url: '',
+        likes: 0,
     }
 
 
@@ -87,6 +89,7 @@ class Forum extends React.Component{
             user_id: userObj.id,
             user_image_url: userObj.user_picture,
             food_id: foodObj.id,
+            foodName: foodObj.name,
             food_image_url: foodObj.image,
         },() => this.postThePost())
     }
@@ -101,8 +104,8 @@ class Forum extends React.Component{
             },
             body: JSON.stringify({
                 user_id: this.state.user_id,
-                // this.props.currentUser.id
                 food_id: this.state.food_id,
+                foodName: this.state.foodName,
                 username: this.state.username,
                 image_url: this.state.food_image_url,
                 profile_image_url: this.state.user_image_url,
@@ -113,7 +116,6 @@ class Forum extends React.Component{
         })
         .then(res => res.json())
         .then(data => {
-            // debugger
             this.addAPost(data)
         })
     }
@@ -132,48 +134,56 @@ class Forum extends React.Component{
             return userObj.username
         }
     }
+    
+   
 
-    incrementLike = (postId,likes) => {
-        // event would be the button on the post which I can also pass in to change its data and then send it to the back
-        //if the button is a like add one to lieks if dislike add one to dislike
-        console.log('postid: ',postId)
-        console.log('likes: ',likes)
-        let newLikes = likes + 1
-        fetch(`http://localhost:3000/posts/${postId}`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json'
-            },
-            body: JSON.stringify({
-                likes: newLikes
-            })
-        })
-        .then(response => response.json())
-        .then(data => console.log(data))
-    }
+    // incrementLike = (postId,likes) => {
+    //     // event would be the button on the post which I can also pass in to change its data and then send it to the back
+    //     //if the button is a like add one to lieks if dislike add one to dislike
+    //     console.log('postid: ',postId)
+    //     console.log('likes: ',likes)
+    //     let newLikes = likes + 1
+
+    //     this.setState({
+    //         likes: newLikes
+    //     },() => 
+    //         {console.log(this.state.likes)}
+    //         // {
+    //         //     fetch(`http://localhost:3000/posts/${postId}`, {
+    //         //         method: 'POST',
+    //         //         headers: {
+    //         //             'Content-Type': 'application/json',
+    //         //             'Accept': 'application/json'
+    //         //         },
+    //         //         body: JSON.stringify({
+    //         //             likes: this.state.likes
+    //         //         })
+    //         //     })
+    //         //     .then(response => response.json())
+    //         //     .then(data => {console.log(data)})
+    //         // }
+    //     )
+    //     // {console.log('state likes : ',this.state.likes)}
+        
+    // }
 
     render(){
         return(
-            <div >
-                <Container>
+            <Container>
+                <Segment>
                 <h1>Forum</h1>
                     {this.props.allPosts ? 
                         this.props.allPosts.map(post => 
                             <Feed size='large'>
-                            {console.log(post)}
+                            {/* {console.log(post)} */}
                                 <Feed.Event>
                                 <Feed.Label image={post.profile_image_url} />
                                     <Feed.Content>
 
                                         <Feed.Summary>
-                                        <a>{post.username}</a>
+                                        <a>{post.username} on {post.foodName}</a>
                                         {/* <Feed.Date>3 days ago</Feed.Date> */}
                                         </Feed.Summary>
-
-                                        <Feed.Extra text>
-                                            {post.text}
-                                        </Feed.Extra>
 
                                         <Feed.Extra images>
                                             <a>
@@ -181,18 +191,22 @@ class Forum extends React.Component{
                                             </a>
                                         </Feed.Extra>
 
+                                        <Feed.Extra text >
+                                            {post.text}
+                                        </Feed.Extra>
+
                                         <Feed.Meta>
-                                            <Button as='div' labelPosition='right' onClick={() => this.incrementLike(post.id,post.likes)} value={post.likes}>
+                                            <Button as='div' labelPosition='right' onClick={() => alert("feature coming soon!")} value={post.likes}>
                                                 <Button icon >
                                                     <Icon name='heart' />
                                                     Like
                                                 </Button>
                                                 <Label as='a' basic pointing='left'>
-                                                    {post.likes}
+                                                    {this.state.likes === 0 ? post.likes : this.state.likes}
                                                 </Label>
                                             </Button>
 
-                                            <Button as='div' labelPosition='left'>
+                                            <Button as='div' labelPosition='left'  onClick={() => alert("feature coming soon!")} >
                                                 <Label as='a' basic pointing='right'>
                                                     {post.dislikes}
                                                 </Label>
@@ -202,11 +216,11 @@ class Forum extends React.Component{
                                                 </Button>
                                             </Button>
                                         </Feed.Meta>
-
-
+                                        <Divider/>
                                     </Feed.Content>
+                                    
                                 </Feed.Event>        
-                            </Feed>                
+                            </Feed>                 
                         )
                     :
                         null
@@ -262,8 +276,8 @@ class Forum extends React.Component{
                     : 
                 null
                 }
-                </Container>
-            </div>
+                </Segment>
+            </Container>
         )
     }
 }

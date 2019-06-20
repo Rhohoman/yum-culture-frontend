@@ -1,11 +1,17 @@
 import React from 'react'
-import { Dropdown } from 'semantic-ui-react'
+import { Dropdown, Card, Image, Segment, Header, Icon, Container, Button, Modal, Form} from 'semantic-ui-react'
 import FavoritesList from './FavoritesList';
 import { connect } from 'react-redux';
 import Loader from './Loader';
 
 
 class User extends React.Component{
+
+    state = {
+        editedUsername: '',
+        editedName: '',
+        editedLocation: '',
+    }
 
     componentDidMount(){
         const userId = this.props.match.params.id
@@ -75,13 +81,31 @@ class User extends React.Component{
         this.props.addFavorites(copyFavoritesArray)
     }
 
-    deleteMealFromFavorites = (favorite) =>{
-        const copyFavoritesArray = [...this.props.favorites]
-        let index = copyFavoritesArray.indexOf(favorite)
-        copyFavoritesArray.splice(index, 1)
+    editButton = (event, oldUserInfo) => {
 
-        this.props.deleteFavorite(copyFavoritesArray)
+        console.log('event',event.target)
+        console.log('old user', oldUserInfo)
+        //here I open up a modal to edit the users information
+        // console.log('user: ', user)
+        // let userId = user.id
+        // fetch(`http://localhost:3000/users/${userId}`, {
+        //     method: 'POST',
+        //     headers: {
+        //         'Content-Type': 'application/json',
+        //         'Accept': 'application/json'
+        //     },
+        //     body: JSON.stringify({user: user})
+        // })
+        // .then(res => res.json())
+        // .then(data => {this.props.editingUserInfo(data)})
+    }
 
+    handleFormChange = (event) => {
+        //here I change the form values to state
+        console.log(event.target.value)
+        this.setState({
+            [event.target.name]: event.target.value
+        })
     }
 
     render(){
@@ -91,29 +115,66 @@ class User extends React.Component{
             <div>
                 {this.props.user ? 
                     <div>
-                        <div>
-                            <h1>User Display page</h1>
-                            {this.props.user ? <img src={this.props.user.user_picture}/> : null}
-                            {this.props.user ? <p>Name: {this.props.user.name}</p> : null}
-                            {this.props.user ? <p>Location: {this.props.user.location}</p> : null}
-                            {this.props.user ? <p>Username: {this.props.user.username}</p> : null}
-                        </div>
-                        <div>  
-                            <div className='title'>
-                                <h2>Add to Favorites</h2>
+                        <Container>
+                            <Segment>
+                                <Modal trigger={<Button floated='right' >Edit</Button>}>
+                                    <Modal.Header>Edit Form</Modal.Header>
+                                    <Modal.Content>
+                                        <Form onSubmit={(event) => this.editButton(event,this.props.user)}>
+                                            <Header as='h4' floated='left'>Username</Header>
+                                            <Form.Field>
+                                                <input name='username' onChange={this.handleFormChange} value={this.state.username} placeholder={this.props.user.username}/>
+                                            </Form.Field>
+                                            <Header as='h4' floated='left'>Name</Header>
+                                            <Form.Field>
+                                                <input name='name' onChange={this.handleFormChange} value={this.state.name} placeholder={this.props.user.name}/>
+                                            </Form.Field>
+                                            <Header as='h4' floated='left'>Location</Header>
+                                            <Form.Field>
+                                                <input name='location' onChange={this.handleFormChange} value={this.state.location} placeholder={this.props.user.location}/>
+                                            </Form.Field>
+                                            <Button>Submit Changes</Button>
+                                        </Form>
+                                    </Modal.Content>
+                                </Modal>
+
+                                <Header as="h1">{this.props.user ? <p>{this.props.user.username}</p> : null}</Header>
+                                {this.props.user ? <Image className="centered" src={this.props.user.user_picture} size="medium" circular /> : null}
+                                
+                                <Card fluid>
+                                    <Card.Content>
+                                    <Card.Header>{this.props.user ? <p>Name: {this.props.user.name}</p> : null}</Card.Header>
+                                    <Card.Meta>Joined in 2019</Card.Meta>
+                                    <Card.Description>{this.props.user ? <p>Location: {this.props.user.location}</p> : null}</Card.Description>
+                                    </Card.Content>
+
+                                    <Card.Content extra>
+                                    <a>
+                                        <Icon name="user" />
+                                        10 Posts
+                                    </a>
+                                    </Card.Content>
+                                </Card>
+                            </Segment>
+                        </Container>
+                        <Container>
+                        <div className='title'>
+                            <div className='cursive'>
+                                <h2>Add an item to your preferences</h2>
                             </div>
-                            <Dropdown
-                            onChange={this.handleChange}
-                            placeholder='Select an option to add'
-                            fluid
-                            search
-                            selection
-                            value={this.props.selectedFood ? this.props.selectedFood.name : ''}
-                            selectOnNavigation={false}
-                            options={this.props.optionsArray}
-                            />
                         </div>
+                        <Dropdown
+                        onChange={this.handleChange}
+                        placeholder='Select an option to add'
+                        fluid
+                        search
+                        selection
+                        value={this.props.selectedFood ? this.props.selectedFood.name : ''}
+                        selectOnNavigation={false}
+                        options={this.props.optionsArray}
+                        />
                         {this.props.favorites.length === 0 ? null : <FavoritesList favorites={this.props.favorites} />}
+                        </Container>
                     </div>
                         : 
                     <Loader/>
@@ -145,11 +206,12 @@ function mapDispatchToProps(dispatch){
         addFavorites: (favorites) => {
             dispatch({type: "ADD_FAVORITES", payload: favorites})
         },
-        deleteFavorite: (favorites) => {
-            dispatch({type: "DELETE_FAVORITE", payload: favorites})
-        },
         setDropdownOptions: (foods) => {
             dispatch({type: "DROPDOWN_ARRAY", payload: foods})
+        },
+        editingUserInfo: (user) => {
+            debugger
+            dispatch({type: "EDITED_USER", payload:user})
         }
     }
 }

@@ -3,6 +3,7 @@ import MealCard from './MealCard';
 import { Card, Container, Divider, Button} from 'semantic-ui-react';
 import { Header } from 'semantic-ui-react';
 import { connect } from 'react-redux';
+import YouTube from 'react-youtube';
 
 class Home extends React.Component{
 
@@ -25,11 +26,67 @@ class Home extends React.Component{
         })
     }
 
+    // _onReady(event) {
+    //     // // access to player in all event handlers via event.target
+    //     // event.target.pauseVideo();
+    // }
+    
+    // _onEnd(event) {
+    //     // access to player in all event handlers via event.target
+    //     event.target.pauseVideo();
+    // }
+
     render(){
         // console.log(this.props.allFood.map(food => food.categories))
         // console.log(this.props.allFood.filter(food => food.categories.includes('Beef')))
+        
+        // const videoOptions = {
+        //     playerVars: {
+            //         disablekb: 0,
+            //         autoplay: 1,
+            //         showinfo:0,
+            //         rel: 0,
+            //         start: 12,
+            //         end: 90,
+            //         loop:1,
+            //         iv_load_policy: 3,
+            //         modestbranding:1,
+            //         fs: 0,
+            
+            //     }
+            // }
+
+        let videoId = "IkR9tEpU93o";
+
+        // const videoOptions = {
+        //     playerVars: { 
+        //       disablekb: 1,
+        //       autoplay: 1,
+        //       controls: 0,
+        //       rel: 0,
+        //       showinfo: 0,
+        //       start: 4,
+        //       loop: 1,
+        //       fs: 0,
+        //       iv_load_policy: 3,
+        //       modestbranding: 1,
+        //     }
+        //   };
+
         return(
-            <div>
+            <div className='homepage'>
+
+                {/* <div className='video-background'>
+                    <div className='video-foreground'>
+                        <YouTube
+                            videoId="IkR9tEpU93o"
+                            opts={videoOptions}
+                            className="video-iframe"
+                            onReady={this._onReady}
+                            onEnd={this._onEnd}
+                        />
+                    </div>
+                </div> */}
                 
                 <Container text >
                     <Header
@@ -66,7 +123,7 @@ class Home extends React.Component{
 
                 </Container>
 
-                
+                <br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
 
                 <Container textAlign='justified' style={{fontFamily:'cursive'}}>
                     <Divider />

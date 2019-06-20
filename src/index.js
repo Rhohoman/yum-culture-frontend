@@ -51,8 +51,8 @@ function reducer(state = defaultState, action){
       return {...state, favorites: action.payload}
 
     case "DELETE_FAVORITE":
-      console.log('delete')
-      // return {...state, favorites: action.payload}
+      console.log('deleted')
+      return {...state, favorites: action.payload}
 
     case "SET_MOST_FAVORITE_MEAL":
       return {...state, mostFavorited: action.payload}
@@ -68,6 +68,10 @@ function reducer(state = defaultState, action){
 
     case "SET_USER_ARRAY":
       return {...state, usersArray: action.payload}
+
+    case "EDITED_USER":
+      debugger
+      // return {...state,}
 
     default:
       return state

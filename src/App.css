@@ -31,20 +31,20 @@
 
 .topnav {
     overflow: hidden;
-    background-color: #333;
+    background-color: #ffffff;
 }
 
 .topnav a {
     float: left;
     display: block;
-    color: #f2f2f2;
+    color: black;
     text-align: center;
     padding: 14px 30px;
     text-decoration: none;
 }
 
 .topnav a:hover {
-    background-color: #ddd;
+    background-color: #FAFAD2;
     color: black;
 }
 
@@ -77,6 +77,10 @@
     padding-top: 20px;
 }
 
+.cursive{
+    font-family: cursive;
+}
+
 .name {
     padding-top:100px;
     padding-bottom: 80px;
@@ -90,5 +94,44 @@
 }
 
 .profile-icon{
-    margin-left: 90%;
+    margin-left: 80%;
+    padding-bottom: 60px;
 }
+
+.homepage{
+    line-height: 2.5em;
+}
+
+/* &feature=youtu.be&t=13 */
+
+
+.video-background {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    z-index: -99;
+    &::after {
+        display: block;
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 1;
+        background: rgba(0,0,0,0.4)
+    }
+ }
+ .video-foreground,
+ .video-background iframe {
+    filter: sepia(8) saturate(9) hue-rotate(46deg);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    opacity: 0.5;
+ }

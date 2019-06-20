@@ -11,11 +11,11 @@ class FavoritesList extends React.Component{
         return(
             <div>
                 <div className='title'>
-                    <h1>Your Favorite Meals</h1>
+                    <h2>Preferences</h2>
                 </div>
                 <Grid>
                     <Card.Group >
-                        {favoritesArray.map( favoriteMeal => <FavoriteCard handleDelete={this.handleDelte} key={favoriteMeal.id} {...favoriteMeal} />)}
+                        {favoritesArray.map( favoriteMeal => <FavoriteCard key={favoriteMeal.id} {...favoriteMeal} />)}
                     </Card.Group>
                 </Grid>
             </div>

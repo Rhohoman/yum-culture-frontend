@@ -1,5 +1,5 @@
 import React from 'react'
-import { Feed, Icon, Form, Input, TextArea, Button, Select, Modal, Container, Label, Segment, Divider }from 'semantic-ui-react';
+import { Feed, Icon, Form, Input, TextArea, Button, Select, Modal, Container, Label, Segment, Divider, Header }from 'semantic-ui-react';
 import { connect } from 'react-redux';
 
 
@@ -123,7 +123,7 @@ class Forum extends React.Component{
     addAPost = (post) => {
         // debugger
         let copyAllPosts = [...this.props.allPosts]
-        copyAllPosts.push(post)
+        copyAllPosts.unshift(post)
         this.props.addPost(copyAllPosts)
         //reducer
     }
@@ -134,8 +134,6 @@ class Forum extends React.Component{
             return userObj.username
         }
     }
-    
-   
 
     // incrementLike = (postId,likes) => {
     //     // event would be the button on the post which I can also pass in to change its data and then send it to the back
@@ -172,6 +170,57 @@ class Forum extends React.Component{
             <Container>
                 <Segment>
                 <h1>Forum</h1>
+                {this.props.currentUser ? 
+
+                    <Modal trigger={<Button>Write a Post</Button>} >
+                        <Modal.Header>Form</Modal.Header>
+                        <Modal.Content >
+                        <Form onSubmit={(event) => this.handleSubmit(event)}>
+                            <Form.Group widths='equal'>
+                            <Form.Field
+                                id='form-input-control-username'
+                                control={Input}
+                                label='Username'
+                                placeholder='username'
+                                name='username'
+                                value={this.state.username}
+                                onChange={this.handleChange}
+                                />
+                                {/* {console.log(this.state.food)} */}
+                            <Form.Field
+                                control={Select}
+                                options={this.props.optionsArray}
+                                label={{ children: 'Food', htmlFor: 'form-select-control-gender' }}
+                                placeholder={this.state.food ? this.state.food : 'Search Food'}
+                                search
+                                searchInput={{ id: 'form-select-control-food' }}
+                                name='food'
+                                value={this.state.food}
+                                onChange={this.handleChangeFood}
+                                />
+                            </Form.Group>
+
+                            <Form.Field
+                                id='form-textarea-control-opinion'
+                                control={TextArea}
+                                label='Opinion'
+                                placeholder='Opinion'
+                                name='opinion'
+                                onChange={this.handleChangeOpinion}
+                                />
+
+                            <Form.Field
+                                id='form-button-control-public'
+                                control={Button}
+                                content='Post'
+                                />
+                        </Form>
+                        </Modal.Content>
+                    </Modal>
+                        : 
+                    null
+                }
+
                     {this.props.allPosts ? 
                         this.props.allPosts.map(post => 
                             <Feed size='large'>
@@ -225,57 +274,6 @@ class Forum extends React.Component{
                     :
                         null
                     }
-                
-                {this.props.currentUser ? 
-
-                <Modal trigger={<Button>Write a Post</Button>}>
-                    <Modal.Header>Form</Modal.Header>
-                    <Modal.Content >
-                    <Form onSubmit={(event) => this.handleSubmit(event)}>
-                        <Form.Group widths='equal'>
-                        <Form.Field
-                            id='form-input-control-username'
-                            control={Input}
-                            label='Username'
-                            placeholder='username'
-                            name='username'
-                            value={this.state.username}
-                            onChange={this.handleChange}
-                            />
-                            {/* {console.log(this.state.food)} */}
-                        <Form.Field
-                            control={Select}
-                            options={this.props.optionsArray}
-                            label={{ children: 'Food', htmlFor: 'form-select-control-gender' }}
-                            placeholder={this.state.food ? this.state.food : 'Search Food'}
-                            search
-                            searchInput={{ id: 'form-select-control-food' }}
-                            name='food'
-                            value={this.state.food}
-                            onChange={this.handleChangeFood}
-                            />
-                        </Form.Group>
-
-                        <Form.Field
-                            id='form-textarea-control-opinion'
-                            control={TextArea}
-                            label='Opinion'
-                            placeholder='Opinion'
-                            name='opinion'
-                            onChange={this.handleChangeOpinion}
-                            />
-
-                        <Form.Field
-                            id='form-button-control-public'
-                            control={Button}
-                            content='Post'
-                            />
-                    </Form>
-                    </Modal.Content>
-                </Modal>
-                    : 
-                null
-                }
                 </Segment>
             </Container>
         )

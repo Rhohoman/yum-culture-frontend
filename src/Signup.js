@@ -10,7 +10,7 @@ class Signup extends React.Component{
         location: "",
         username: "",
         password: "",
-        user_picture: "",
+        user_picture: "https://is2-ssl.mzstatic.com/image/thumb/Purple71/v4/c9/f9/d1/c9f9d1e4-b9f1-6bf2-5846-199528ddab8e/source/512x512bb.jpg",
     }
     handleChange = (event) => {
         console.log(event.target.name,": ", event.target.value)
@@ -73,7 +73,7 @@ class Signup extends React.Component{
                                 <input onChange={this.handleChange} name='password' value={this.state.password} type='password' placeholder='Password' />
                         </Form.Field>
                         <br />
-                        <Button type='submit'>Submit</Button>
+                        <Button positive type='submit'>Submit</Button>
                     </Form>
                     <br /><br />
                 </Segment>

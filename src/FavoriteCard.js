@@ -33,6 +33,9 @@ class FavoriteCard extends React.Component{
 
     }
 
+    alert = () => {
+        alert('feature coming soon! be patient! gr')
+    }
     render(){
         return(
                 <Card>
@@ -46,7 +49,8 @@ class FavoriteCard extends React.Component{
                         {/* conditionally render? based on either the click render a modal that pops open showing the instructions  */}
                     </Card.Content>
                     <Card.Content extra>
-                        <Button basic color='white' fluid onClick={this.props.deleteFavorite}>
+                        {/* <Button disable basic color='white' fluid onClick={this.props.deleteFavorite}> */}
+                        <Button fluid basic color='white' disable onClick={this.alert}>
                             Show More
                         </Button><br/>
                         <Button basic color='red' fluid onClick={() => this.postDelete(this.props)}>

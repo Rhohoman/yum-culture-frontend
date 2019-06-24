@@ -1,5 +1,5 @@
 import React from 'react'
-import { Dropdown, Card, Image, Segment, Header, Icon, Container, Button, Modal, Form} from 'semantic-ui-react'
+import { Dropdown, Card, Image, Segment, Header, Icon, Container, Button, Modal, Form, Confirm } from 'semantic-ui-react'
 import FavoritesList from './FavoritesList';
 import { connect } from 'react-redux';
 import Loader from './Loader';
@@ -11,6 +11,7 @@ class User extends React.Component{
         editedUsername: '',
         editedName: '',
         editedLocation: '',
+        confirmButton: false,
     }
 
     componentDidMount(){
@@ -108,6 +109,11 @@ class User extends React.Component{
         })
     }
 
+    open = () => {
+        alert('🤪🤪🤪 Sike this feature is not in yet tune in tho')
+    }
+    // close = () => this.setState({ confirmButton: false })
+
     render(){
         // console.log(this.props.user)
         // console.log(this.state.user ? this.state.user.favorites : null)
@@ -120,7 +126,8 @@ class User extends React.Component{
                                 <Modal trigger={<Button floated='right' >Edit</Button>}>
                                     <Modal.Header>Edit Form</Modal.Header>
                                     <Modal.Content>
-                                        <Form onSubmit={(event) => this.editButton(event,this.props.user)}>
+                                        {/* <Form onSubmit={(event) => this.editButton(event,this.props.user)}> */}
+                                        <Form >
                                             <Header as='h4' floated='left'>Username</Header>
                                             <Form.Field>
                                                 <input name='username' onChange={this.handleFormChange} value={this.state.username} placeholder={this.props.user.username}/>
@@ -133,7 +140,8 @@ class User extends React.Component{
                                             <Form.Field>
                                                 <input name='location' onChange={this.handleFormChange} value={this.state.location} placeholder={this.props.user.location}/>
                                             </Form.Field>
-                                            <Button>Submit Changes</Button>
+                                            <Button onClick={this.open} positive>Submit Changes</Button>
+                                            <Confirm open={this.state.open} onCancel={this.close} onConfirm={this.close} />
                                         </Form>
                                     </Modal.Content>
                                 </Modal>

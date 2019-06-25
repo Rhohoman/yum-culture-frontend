@@ -1,20 +1,17 @@
 import React from 'react'
-import { Feed, Icon, Form, Input, TextArea, Button, Select, Modal, Container, Label, Segment, Divider, Header }from 'semantic-ui-react';
+import { Feed, Icon, Form, Header, TextArea, Button, Select, Modal, Container, Label, Segment, Divider }from 'semantic-ui-react';
 import { connect } from 'react-redux';
 
 
 class Forum extends React.Component{
 
     state = {
-        username: '',
         food: '',
         opinion: '',
         usersArray: [],
-        user_id: 0,
         food_id: 0,
         foodName: '',
         food_image_url: '',
-        user_image_url: '',
         likes: 0,
     }
 
@@ -49,17 +46,13 @@ class Forum extends React.Component{
     
     handleChange = (event) => {
         console.log('value: ', event.target.value)
-        //here I get a users name
-        // debugger
         this.setState({
             [event.target.name]: event.target.value
         })
     }
     
     handleChangeFood = (event) => {
-        // debugger
         console.log(event.target.innerText)
-        //thing about this is all I get is a name text which means I have to find that object wiht its name
         this.setState({
             food: event.target.innerText
         })
@@ -74,20 +67,13 @@ class Forum extends React.Component{
 
     handleSubmit = (event) => {
         event.preventDefault()
-        this.getNecessaryInfo()
+        this.findingFood()
     }
 
-    getNecessaryInfo = () => {
-        this.findingUserAndFood()
-    }
-
-    findingUserAndFood = () => {
-        let userObj = this.state.usersArray.find(user => user.username === this.state.username)
+    findingFood = () => {
         let allFoodCopy = this.props.allFood
         let foodObj = allFoodCopy.find(food => food.name === this.state.food)
         this.setState({
-            user_id: userObj.id,
-            user_image_url: userObj.user_picture,
             food_id: foodObj.id,
             foodName: foodObj.name,
             food_image_url: foodObj.image,
@@ -95,7 +81,6 @@ class Forum extends React.Component{
     }
 
     postThePost = () => {
-        // debugger
         fetch('http://localhost:3000/posts', {
             method: 'POST',
             headers: {
@@ -103,12 +88,12 @@ class Forum extends React.Component{
                 'Accept': 'application/json'
             },
             body: JSON.stringify({
-                user_id: this.state.user_id,
+                user_id: this.props.currentUser.id,
                 food_id: this.state.food_id,
                 foodName: this.state.foodName,
-                username: this.state.username,
+                username: this.props.currentUser.username,
                 image_url: this.state.food_image_url,
-                profile_image_url: this.state.user_image_url,
+                profile_image_url: this.props.currentUser.user_picture,
                 text: this.state.opinion,
                 likes: 0,
                 dislikes: 0,
@@ -123,7 +108,7 @@ class Forum extends React.Component{
     addAPost = (post) => {
         // debugger
         let copyAllPosts = [...this.props.allPosts]
-        copyAllPosts.unshift(post)
+        copyAllPosts.push(post)
         this.props.addPost(copyAllPosts)
         //reducer
     }
@@ -134,6 +119,7 @@ class Forum extends React.Component{
             return userObj.username
         }
     }
+
 
     // incrementLike = (postId,likes) => {
     //     // event would be the button on the post which I can also pass in to change its data and then send it to the back
@@ -166,61 +152,11 @@ class Forum extends React.Component{
     // }
 
     render(){
+
         return(
             <Container>
                 <Segment>
                 <h1>Forum</h1>
-                {this.props.currentUser ? 
-
-                    <Modal trigger={<Button>Write a Post</Button>} >
-                        <Modal.Header>Form</Modal.Header>
-                        <Modal.Content >
-                        <Form onSubmit={(event) => this.handleSubmit(event)}>
-                            <Form.Group widths='equal'>
-                            <Form.Field
-                                id='form-input-control-username'
-                                control={Input}
-                                label='Username'
-                                placeholder='username'
-                                name='username'
-                                value={this.state.username}
-                                onChange={this.handleChange}
-                                />
-                                {/* {console.log(this.state.food)} */}
-                            <Form.Field
-                                control={Select}
-                                options={this.props.optionsArray}
-                                label={{ children: 'Food', htmlFor: 'form-select-control-gender' }}
-                                placeholder={this.state.food ? this.state.food : 'Search Food'}
-                                search
-                                searchInput={{ id: 'form-select-control-food' }}
-                                name='food'
-                                value={this.state.food}
-                                onChange={this.handleChangeFood}
-                                />
-                            </Form.Group>
-
-                            <Form.Field
-                                id='form-textarea-control-opinion'
-                                control={TextArea}
-                                label='Opinion'
-                                placeholder='Opinion'
-                                name='opinion'
-                                onChange={this.handleChangeOpinion}
-                                />
-
-                            <Form.Field
-                                id='form-button-control-public'
-                                control={Button}
-                                content='Post'
-                                />
-                        </Form>
-                        </Modal.Content>
-                    </Modal>
-                        : 
-                    null
-                }
-
                     {this.props.allPosts ? 
                         this.props.allPosts.map(post => 
                             <Feed size='large'>
@@ -272,6 +208,55 @@ class Forum extends React.Component{
                             </Feed>                 
                         )
                     :
+                        null
+                    }
+                    {this.props.currentUser ? 
+                        <Modal trigger={<Button>Write a Post</Button>} closeIcon >
+                            <Modal.Header>How do you feel?</Modal.Header>
+                            <Modal.Content >
+                            <Header as='h3' color='blue'>{this.props.currentUser.username}</Header>
+                            <Form onSubmit={(event) => this.handleSubmit(event)}>
+                                <Form.Group widths='equal'>
+                                {/* <Form.Field
+                                    id='form-input-control-username'
+                                    control={Input}
+                                    label='Username'
+                                    placeholder='username'
+                                    name='username'
+                                    value={this.state.username}
+                                    onChange={this.handleChange}
+                                    /> */}
+                                <Form.Field
+                                    control={Select}
+                                    options={this.props.optionsArray}
+                                    label={{ children: 'Food', htmlFor: 'form-select-control-gender' }}
+                                    placeholder={this.state.food ? this.state.food : 'Search Food'}
+                                    search
+                                    searchInput={{ id: 'form-select-control-food' }}
+                                    name='food'
+                                    value={this.state.food}
+                                    onChange={this.handleChangeFood}
+                                    />
+                                </Form.Group>
+
+                                <Form.Field
+                                    id='form-textarea-control-opinion'
+                                    control={TextArea}
+                                    label='Opinion'
+                                    placeholder='Opinion'
+                                    name='opinion'
+                                    onChange={this.handleChangeOpinion}
+                                    />
+
+                                <Form.Field
+                                    id='form-button-control-public'
+                                    control={Button}
+                                    content='Post'
+                                    />
+                            </Form>
+                            </Modal.Content>
+                        </Modal>
+                            : 
                         null
                     }
                 </Segment>

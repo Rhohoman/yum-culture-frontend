@@ -1,5 +1,5 @@
 import React from 'react'
-import { Feed, Icon, Form, Header, TextArea, Button, Select, Modal, Container, Label, Segment, Divider }from 'semantic-ui-react';
+import { Feed, Icon, Form, Header, TextArea, Button, Select, Modal, Container, Label, Segment, Divider, Popup }from 'semantic-ui-react';
 import { connect } from 'react-redux';
 
 
@@ -8,11 +8,12 @@ class Forum extends React.Component{
     state = {
         food: '',
         opinion: '',
-        usersArray: [],
+        // usersArray: [],
         food_id: 0,
         foodName: '',
         food_image_url: '',
         likes: 0,
+        dislikes: 0,
     }
 
 
@@ -27,10 +28,8 @@ class Forum extends React.Component{
         .then( () => 
             fetch(`http://localhost:3000/users`)
             .then(response => response.json())
-            .then(users => 
-                this.setState({
-                    usersArray: users
-                })
+            .then(users =>
+                this.props.setUsersArray(users)
             )
         )
     }
@@ -74,6 +73,7 @@ class Forum extends React.Component{
         let allFoodCopy = this.props.allFood
         let foodObj = allFoodCopy.find(food => food.name === this.state.food)
         this.setState({
+            foodObj: foodObj,
             food_id: foodObj.id,
             foodName: foodObj.name,
             food_image_url: foodObj.image,
@@ -95,8 +95,8 @@ class Forum extends React.Component{
                 image_url: this.state.food_image_url,
                 profile_image_url: this.props.currentUser.user_picture,
                 text: this.state.opinion,
-                likes: 0,
-                dislikes: 0,
+                likes: this.state.likes,
+                dislikes: this.state.dislikes,
             })
         })
         .then(res => res.json())
@@ -106,7 +106,6 @@ class Forum extends React.Component{
     }
 
     addAPost = (post) => {
-        // debugger
         let copyAllPosts = [...this.props.allPosts]
         copyAllPosts.push(post)
         this.props.addPost(copyAllPosts)
@@ -115,41 +114,68 @@ class Forum extends React.Component{
 
     findUserReturnName = (postUser) => {
         if(postUser){ 
-            let userObj = this.state.usersArray.find(user => user.id === postUser.id)
+            let userObj = this.props.usersArray.find(user => user.id === postUser.id)
             return userObj.username
         }
     }
 
+    incrementLike = (postId, postLikes) => {
+        // event would be the button on the post which I can also pass in to change its data and then send it to the back
+        //if the button is a like add one to lieks if dislike add one to dislike
+        console.log('postid: ',postId)
+        console.log('likes: ',postLikes)
 
-    // incrementLike = (postId,likes) => {
-    //     // event would be the button on the post which I can also pass in to change its data and then send it to the back
-    //     //if the button is a like add one to lieks if dislike add one to dislike
-    //     console.log('postid: ',postId)
-    //     console.log('likes: ',likes)
-    //     let newLikes = likes + 1
+        let newLikes = postLikes + 1
 
-    //     this.setState({
-    //         likes: newLikes
-    //     },() => 
-    //         {console.log(this.state.likes)}
-    //         // {
-    //         //     fetch(`http://localhost:3000/posts/${postId}`, {
-    //         //         method: 'POST',
-    //         //         headers: {
-    //         //             'Content-Type': 'application/json',
-    //         //             'Accept': 'application/json'
-    //         //         },
-    //         //         body: JSON.stringify({
-    //         //             likes: this.state.likes
-    //         //         })
-    //         //     })
-    //         //     .then(response => response.json())
-    //         //     .then(data => {console.log(data)})
-    //         // }
-    //     )
-    //     // {console.log('state likes : ',this.state.likes)}
-        
-    // }
+        fetch(`http://localhost:3000/posts/${postId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({
+                    likes: newLikes
+                })
+            })
+        .then(response => response.json())
+        .then(data => this.updatePost(data))
+
+                //in this part of the code I get that post back and should be replacing the post I have in reducer state with this new post
+    }
+
+    incrementDislike = (postId, postDislikes) => {
+        // event would be the button on the post which I can also pass in to change its data and then send it to the back
+        //if the button is a like add one to lieks if dislike add one to dislike
+        console.log('postid: ',postId)
+        console.log('dislikes: ',postDislikes)
+
+        let newDislikes = postDislikes + 1
+        fetch(`http://localhost:3000/posts/${postId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({
+                    dislikes: newDislikes
+                })
+            })
+        .then(response => response.json())
+        .then(data => this.updatePost(data))
+                //in this part of the code I get that post back and should be replacing the post I have in reducer state with this new post
+    }
+
+    updatePost = (newPost) => {
+        //here I find the post with the same id and replace it with new post
+        // debugger
+        let oldPostIndex = this.props.allPosts.findIndex( originalPost => originalPost.id === newPost.id)
+        let copyAllPosts = [...this.props.allPosts]
+
+        copyAllPosts[oldPostIndex] = newPost
+
+        this.props.updatePost(copyAllPosts)
+        // debugger
+    }
 
     render(){
 
@@ -160,7 +186,6 @@ class Forum extends React.Component{
                     {this.props.allPosts ? 
                         this.props.allPosts.map(post => 
                             <Feed size='large'>
-                            {/* {console.log(post)} */}
                                 <Feed.Event>
                                 <Feed.Label image={post.profile_image_url} />
                                     <Feed.Content>
@@ -181,17 +206,19 @@ class Forum extends React.Component{
                                         </Feed.Extra>
 
                                         <Feed.Meta>
-                                            <Button as='div' labelPosition='right' onClick={() => alert("feature coming soon!")} value={post.likes}>
+                                            {/* <Button as='div' labelPosition='right' onClick={() => alert("feature coming soon!")} value={post.likes}> */}
+                                            <Button as='div' labelPosition='right' onClick={() => this.incrementLike(post.id, post.likes)} value={post.likes}>
                                                 <Button icon >
                                                     <Icon name='heart' />
                                                     Like
                                                 </Button>
                                                 <Label as='a' basic pointing='left'>
-                                                    {this.state.likes === 0 ? post.likes : this.state.likes}
+                                                    {/* {this.state.likes === 0 ? post.likes : this.state.likes} */}
+                                                    {post.likes}
                                                 </Label>
                                             </Button>
 
-                                            <Button as='div' labelPosition='left'  onClick={() => alert("feature coming soon!")} >
+                                            <Button as='div' labelPosition='left'  onClick={() => this.incrementDislike(post.id, post.dislikes)} value={post.dislikes}>
                                                 <Label as='a' basic pointing='right'>
                                                     {post.dislikes}
                                                 </Label>
@@ -247,11 +274,15 @@ class Forum extends React.Component{
                                     name='opinion'
                                     onChange={this.handleChangeOpinion}
                                     />
-
-                                <Form.Field
-                                    id='form-button-control-public'
-                                    control={Button}
-                                    content='Post'
+                                <Popup
+                                    content='Submitted!'
+                                    on='click'
+                                    pinned
+                                    trigger={<Form.Field
+                                        id='form-button-control-public'
+                                        control={Button}
+                                        content='Post'
+                                        />}
                                     />
                             </Form>
                             </Modal.Content>
@@ -272,6 +303,7 @@ function mapStateToProps(state){
         optionsArray: state.optionsArray,
         allPosts: state.allPosts,
         currentUser: state.currentUser,
+        usersArray: state.usersArray
     }
 }
 
@@ -286,6 +318,12 @@ function mapDispatchToProps(dispatch){
         },
         addPost: (post) => {
             dispatch({type: "ADD_POST", payload: post})
+        },
+        updatePost: (posts) => {
+            dispatch({type: "UPDATE_POST", payload: posts})
+        },
+        setUsersArray: (users) => {
+            dispatch({type: "SET_USERS_ARRAY", payload: users})
         },
     }
 }

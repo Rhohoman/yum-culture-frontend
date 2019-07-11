@@ -134,9 +134,6 @@ function mapDispatchToProps(dispatch,props){
       dispatch({type: "SET_CURRENT_USER", payload: user})
     },
     logOut: (user) => {
-      // debugger
-      // this.context.history.push('/login')
-      // console.log(props)
       props.history.push('/login')
       dispatch({type: "LOG_OUT", payload: user})
     },

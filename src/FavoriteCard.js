@@ -50,9 +50,9 @@ class FavoriteCard extends React.Component{
                     </Card.Content>
                     <Card.Content extra>
                         {/* <Button disable basic color='white' fluid onClick={this.props.deleteFavorite}> */}
-                        <Button fluid basic color='white' disable onClick={this.alert}>
+                        {/* <Button fluid basic color='white' disable onClick={this.alert}>
                             Show More
-                        </Button><br/>
+                        </Button><br/> */}
                         <Button basic color='red' fluid onClick={() => this.postDelete(this.props)}>
                             Delete
                         </Button>

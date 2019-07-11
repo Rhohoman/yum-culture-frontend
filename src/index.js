@@ -11,7 +11,7 @@ import { Provider } from 'react-redux';
 const defaultState={
   currentUser: null,
   allFood: [],
-  user: null,
+  // user: null,
   favorites: [],
   selectedFood: null,
   mostFavorited: {},
@@ -39,9 +39,9 @@ function reducer(state = defaultState, action){
     case "FETCH_USER":
       return {...state, currentUser: action.payload.user}
 
-    case "FETCH_USER_AND_FAVORITES":
+    case "FETCH_USER_FAVORITES":
       // debugger
-      return {...state, user: action.payload, favorites: action.payload.favorites}
+      return {...state, favorites: action.payload.favorites}
       
     case "SELECTED_FOOD":
       // debugger
@@ -66,12 +66,19 @@ function reducer(state = defaultState, action){
     case "ADD_POST":
       return {...state, allPosts: action.payload}
 
-    case "SET_USER_ARRAY":
+    case "SET_USERS_ARRAY":
+      // debugger
       return {...state, usersArray: action.payload}
 
     case "EDITED_USER":
-      debugger
-      // return {...state,}
+      // debugger
+      return {...state, usersArray: action.payload}
+
+    case "UPDATE_POST":
+      return {...state, allPosts: action.payload}
+
+    case "UPDATE_CURRENT_USER":
+      return {...state, currentUser: action.payload}
 
     default:
       return state

@@ -57,8 +57,9 @@ class Login extends React.Component{
                         <Button positive type='submit'>Submit</Button>
                     </Form>
                     <br /><br />
-                    <b>Forgot your password?  </b>
-                    <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ">Click here to reset</a><br />
+                    {/* rick roll */}
+                    {/* <b>Forgot your password?  </b>
+                    <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ">Click here to reset</a><br /> */}
                     <b>Haven't Signed up yet?  </b>
                     <a href="http://localhost:3001/signup">Sign Up </a>
                 </Segment>

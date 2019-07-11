@@ -1,6 +1,6 @@
 import React from 'react'
 import FavoriteCard from './FavoriteCard'
-import { Grid, Card } from 'semantic-ui-react';
+import { Grid, Card, Container } from 'semantic-ui-react';
 import { connect } from 'react-redux';
 
 
@@ -9,16 +9,16 @@ class FavoritesList extends React.Component{
         // console.log(this.props.favorites)
         const favoritesArray = this.props.favorites
         return(
-            <div>
+            <Container>
                 <div className='title'>
                     <h2>Preferences</h2>
                 </div>
                 <Grid>
-                    <Card.Group >
+                    <Card.Group itemsPerRow={4}>
                         {favoritesArray.map( favoriteMeal => <FavoriteCard key={favoriteMeal.id} {...favoriteMeal} />)}
                     </Card.Group>
                 </Grid>
-            </div>
+            </Container>
         )
     }
 }

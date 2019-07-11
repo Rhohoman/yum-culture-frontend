@@ -8,10 +8,8 @@ import Loader from './Loader';
 class User extends React.Component{
 
     state = {
-        editedUsername: '',
-        editedName: '',
-        editedLocation: '',
         confirmButton: false,
+        user: {},
     }
 
     componentDidMount(){
@@ -25,7 +23,17 @@ class User extends React.Component{
         .then(response => {
             this.props.fetchUserData(response)
             this.changeKeyForSearch()
+            this.setState({
+                user: response
+            })
         })
+        .then( () => 
+            fetch(`http://localhost:3000/users`)
+            .then(response => response.json())
+            .then(users =>
+                this.props.setUsersArray(users)
+            )
+        )
     }
 
     changeKeyForSearch = () => {
@@ -59,7 +67,7 @@ class User extends React.Component{
                     'Accept': 'application/json'
                 },
                 body: JSON.stringify({ 
-                    user_id: this.props.user.id,
+                    user_id: this.state.user.id,
                     food_id: this.props.selectedFood.id,
                     name: this.props.selectedFood.name,
                     image: this.props.selectedFood.image,
@@ -83,106 +91,138 @@ class User extends React.Component{
     }
 
     editButton = (event, oldUserInfo) => {
-
+        // debugger
         console.log('event',event.target)
         console.log('old user', oldUserInfo)
+        
+        let userId = oldUserInfo.id
+        let updatedUsername = event.target.querySelector('.username-input').value
+        let updatedName = event.target.querySelector('.name-input').value
+        let updatedLocation = event.target.querySelector('.location-input').value
+
+        console.log('username', updatedUsername)
+        console.log('name', updatedName)
+        console.log('location', updatedLocation)
         //here I open up a modal to edit the users information
-        // console.log('user: ', user)
-        // let userId = user.id
-        // fetch(`http://localhost:3000/users/${userId}`, {
-        //     method: 'POST',
-        //     headers: {
-        //         'Content-Type': 'application/json',
-        //         'Accept': 'application/json'
-        //     },
-        //     body: JSON.stringify({user: user})
-        // })
-        // .then(res => res.json())
-        // .then(data => {this.props.editingUserInfo(data)})
+
+        fetch(`http://localhost:3000/users/${userId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({
+                username: updatedUsername,
+                name: updatedName,
+                location: updatedLocation,
+            })
+        })
+        .then(res => res.json())
+        .then(data => {this.updatingUsersArray(data)})
+        .then(() => this.props.history.push('/home'))
     }
 
-    handleFormChange = (event) => {
-        //here I change the form values to state
-        console.log(event.target.value)
-        this.setState({
-            [event.target.name]: event.target.value
-        })
+    updatingUsersArray = (updatedUserInfo) => {
+        let index = this.props.usersArray.findIndex( user => user.id === updatedUserInfo.id )
+        let copyUsersArray = [...this.props.usersArray]
+
+        copyUsersArray[index] = updatedUserInfo
+        // debugger
+        this.props.editingUserInfo(copyUsersArray)
+        this.props.updateCurrentUser(updatedUserInfo)
     }
+
+
 
     open = () => {
-        alert('🤪🤪🤪 Sike this feature is not in yet tune in tho')
+        // alert('🤪🤪🤪 Sike this feature is not in yet tune in tho')
     }
     // close = () => this.setState({ confirmButton: false })
 
     render(){
-        // console.log(this.props.user)
         // console.log(this.state.user ? this.state.user.favorites : null)
+        console.log('currentUser', this.props.currentUser)
+        console.log('state user', this.props.user)
         return(
             <div>
-                {this.props.user ? 
+                {this.props.currentUser ?
                     <div>
                         <Container>
                             <Segment>
-                                <Modal trigger={<Button floated='right' >Edit</Button>}>
-                                    <Modal.Header>Edit Form</Modal.Header>
-                                    <Modal.Content>
-                                        {/* <Form onSubmit={(event) => this.editButton(event,this.props.user)}> */}
-                                        <Form >
-                                            <Header as='h4' floated='left'>Username</Header>
-                                            <Form.Field>
-                                                <input name='username' onChange={this.handleFormChange} value={this.state.username} placeholder={this.props.user.username}/>
-                                            </Form.Field>
-                                            <Header as='h4' floated='left'>Name</Header>
-                                            <Form.Field>
-                                                <input name='name' onChange={this.handleFormChange} value={this.state.name} placeholder={this.props.user.name}/>
-                                            </Form.Field>
-                                            <Header as='h4' floated='left'>Location</Header>
-                                            <Form.Field>
-                                                <input name='location' onChange={this.handleFormChange} value={this.state.location} placeholder={this.props.user.location}/>
-                                            </Form.Field>
-                                            <Button onClick={this.open} positive>Submit Changes</Button>
-                                            <Confirm open={this.state.open} onCancel={this.close} onConfirm={this.close} />
-                                        </Form>
-                                    </Modal.Content>
-                                </Modal>
+                                {this.props.currentUser.username === this.state.user.username ?
+                                    <Modal trigger={<Button floated='right' >Edit</Button>}>
+                                        <Modal.Header>Edit Form</Modal.Header>
+                                        <Modal.Content>
+                                            <Form onSubmit={(event) => this.editButton(event,this.state.user)}>
+                                            {/* <Form > */}
+                                                <Header as='h4' floated='left'>Username</Header>
+                                                    <Form.Field name='username' >
+                                                        <input class='username-input' placeholder={this.state.user.username}/>
+                                                    </Form.Field>
+                                                <Header as='h4' floated='left'>Name</Header>
+                                                    <Form.Field name='name' >
+                                                        <input class='name-input' placeholder={this.state.user.name}/>
+                                                    </Form.Field>
+                                                <Header as='h4' floated='left'>Location</Header>
+                                                    <Form.Field name='location' >
+                                                        <input class='location-input' placeholder={this.state.user.location}/>
+                                                    </Form.Field>
+                                                <Button onClick={this.open} positive>Submit Changes</Button>
+                                                <Confirm open={this.state.open} onCancel={this.close} onConfirm={this.close} />
+                                            </Form>
+                                        </Modal.Content>
+                                    </Modal>
+                                :
+                                    null
+                                }
 
-                                <Header as="h1">{this.props.user ? <p>{this.props.user.username}</p> : null}</Header>
-                                {this.props.user ? <Image className="centered" src={this.props.user.user_picture} size="medium" circular /> : null}
+                                {/* this is where the users stuff comes in */}
+
+                                <Header as="h1">{this.props.currentUser ? <p>{this.state.user.username}</p> : null}</Header>
+                                {this.props.currentUser ? <Image className="centered" src={this.state.user.user_picture} size="medium" circular /> : null}
                                 
                                 <Card fluid>
                                     <Card.Content>
-                                    <Card.Header>{this.props.user ? <p>Name: {this.props.user.name}</p> : null}</Card.Header>
+                                    <Card.Header>{this.props.currentUser ? <p>Name: {this.state.user.name}</p> : null}</Card.Header>
                                     <Card.Meta>Joined in 2019</Card.Meta>
-                                    <Card.Description>{this.props.user ? <p>Location: {this.props.user.location}</p> : null}</Card.Description>
+                                    <Card.Description>{this.props.currentUser ? <p>Location: {this.state.user.location}</p> : null}</Card.Description>
                                     </Card.Content>
 
-                                    <Card.Content extra>
+                                    {/* <Card.Content extra>
                                     <a>
                                         <Icon name="user" />
                                         10 Posts
                                     </a>
-                                    </Card.Content>
+                                    </Card.Content> */}
+
                                 </Card>
                             </Segment>
                         </Container>
-                        <Container>
-                        <div className='title'>
-                            <div className='cursive'>
-                                <h2>Add an item to your preferences</h2>
+
+                        {this.props.currentUser.username === this.state.user.username ?
+                            <div>
+                                <Container>
+                                    <div className='title'>
+                                        <div className='cursive'>
+                                            <h2>Add an item to your preferences</h2>
+                                        </div>
+                                    </div>
+                                    <Dropdown
+                                    onChange={this.handleChange}
+                                    placeholder='Select an option to add'
+                                    fluid
+                                    search
+                                    selection
+                                    value={this.props.selectedFood ? this.props.selectedFood.name : ''}
+                                    selectOnNavigation={false}
+                                    options={this.props.optionsArray}
+                                    />
+                                </Container>
+                                {this.props.favorites.length === 0 ? null : <FavoritesList favorites={this.props.favorites} />}
                             </div>
-                        </div>
-                        <Dropdown
-                        onChange={this.handleChange}
-                        placeholder='Select an option to add'
-                        fluid
-                        search
-                        selection
-                        value={this.props.selectedFood ? this.props.selectedFood.name : ''}
-                        selectOnNavigation={false}
-                        options={this.props.optionsArray}
-                        />
-                        {this.props.favorites.length === 0 ? null : <FavoritesList favorites={this.props.favorites} />}
-                        </Container>
+                            :
+                            null
+                        }
                     </div>
                         : 
                     <Loader/>
@@ -195,10 +235,12 @@ class User extends React.Component{
 function mapStateToProps(state){
     // get state
     return {
-      user: state.user,
-      favorites: state.favorites,
-      selectedFood: state.selectedFood,
-      optionsArray: state.optionsArray,
+        currentUser: state.currentUser,
+        user: state.user,
+        usersArray: state.usersArray,
+        favorites: state.favorites,
+        selectedFood: state.selectedFood,
+        optionsArray: state.optionsArray,
     }
 }
   
@@ -206,7 +248,7 @@ function mapDispatchToProps(dispatch){
     //edit states
     return {
         fetchUserData: (userData) => {
-            dispatch({type: "FETCH_USER_AND_FAVORITES", payload: userData})
+            dispatch({type: "FETCH_USER_FAVORITES", payload: userData})
         },
         handleChange: (selectedFood) => {
             dispatch({type: "SELECTED_FOOD", payload: selectedFood})
@@ -217,9 +259,14 @@ function mapDispatchToProps(dispatch){
         setDropdownOptions: (foods) => {
             dispatch({type: "DROPDOWN_ARRAY", payload: foods})
         },
-        editingUserInfo: (user) => {
-            debugger
-            dispatch({type: "EDITED_USER", payload:user})
+        setUsersArray: (users) => {
+            dispatch({type: "SET_USERS_ARRAY", payload: users})
+        },
+        editingUserInfo: (users) => {
+            dispatch({type: "EDITED_USER", payload: users})
+        },
+        updateCurrentUser: (user) => {
+            dispatch({type: "UPDATE_CURRENT_USER", payload: user})
         }
     }
 }
